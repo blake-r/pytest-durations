@@ -1,9 +1,11 @@
 from datetime import timedelta
 from operator import itemgetter
 from statistics import median
-from typing import Dict, List, NoReturn, cast, Tuple
+from typing import Dict, List, NoReturn, cast, Tuple, TYPE_CHECKING
 
-from _pytest.terminal import TerminalReporter
+if TYPE_CHECKING:
+    from _pytest.terminal import TerminalReporter
+
 
 ReportRowT = Tuple[str, str, str, str, str, str]
 TimeValuesT = Tuple[str, int, timedelta, timedelta, timedelta, timedelta]
@@ -15,11 +17,11 @@ _COLUMNS_ORDER = (5, 0, 1, 4, 2, 3)  # sum, name, calls, avg, min, max
 
 
 def report_measurements(
-    reporter: TerminalReporter,
+    reporter: "TerminalReporter",
     section_name: str,
     measurements: Dict[str, List[float]],
-    min_time: float = -1.0,
-    max_rows: int = None,
+    min_duration: float = -1.0,
+    durations: int = 0,
 ) -> NoReturn:
     """Add time measurement results to reporter."""
     time_values_all = [
@@ -34,9 +36,9 @@ def report_measurements(
         for name, times in measurements.items()
     ]
     # verbose values are limited by minimal time and number of rows
-    time_values_verbose = [values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= min_time]
+    time_values_verbose = [values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= min_duration]
     time_values_verbose.sort(key=itemgetter(_SORT_COLUMN_IDX), reverse=True)
-    time_values_verbose = time_values_verbose[:max_rows]
+    time_values_verbose = time_values_verbose[:durations] if durations else time_values_verbose
 
     report_rows = [
         _get_report_header_row(),
