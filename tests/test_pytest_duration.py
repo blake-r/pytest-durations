@@ -6,7 +6,7 @@ from unittest.mock import Mock, call
 from _pytest.terminal import TerminalReporter
 import pytest
 
-from tests.plugins.measure_time import _report_measurements
+from pytest_duration.reporting import report_measurements
 
 _SAMPLE_SECTION_NAME = "sample section"
 _SAMPLE_FIXTURE_NAME = "fixture_sample"
@@ -34,7 +34,7 @@ def test_version():
 class TestMeasureTime:
     def test_report_measurements(self, fake_reporter, sample_measurements):
         """Show all fixture in the reverse order of their total time."""
-        _report_measurements(
+        report_measurements(
             reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements
         )
         assert fake_reporter.line.call_args_list == [
@@ -46,7 +46,7 @@ class TestMeasureTime:
 
     def test_report_measurements_empty_results(self, fake_reporter):
         """Show header and zeroed footer rows only (empty report)."""
-        _report_measurements(reporter=fake_reporter, section_name="sample section", measurements={})
+        report_measurements(reporter=fake_reporter, section_name="sample section", measurements={})
         assert fake_reporter.line.call_args_list == [
             call("total   name        num avg     min     max    "),
             call("0:00:00 grand total   0 0:00:00 0:00:00 0:00:00"),
@@ -54,7 +54,7 @@ class TestMeasureTime:
 
     def test_report_measurements_with_time_limit(self, fake_reporter, sample_measurements):
         """Show fixtures with total time more than a limit (1 second)."""
-        _report_measurements(
+        report_measurements(
             reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements, min_time=1.0
         )
         assert fake_reporter.line.call_args_list == [
@@ -65,7 +65,7 @@ class TestMeasureTime:
 
     def test_report_measurements_with_rows_limit(self, fake_reporter, sample_measurements):
         """Report a single line of fixture with the top total time."""
-        _report_measurements(
+        report_measurements(
             reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements, max_rows=1
         )
         assert fake_reporter.line.call_args_list == [
