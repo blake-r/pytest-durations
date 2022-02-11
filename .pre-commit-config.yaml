@@ -1,0 +1,37 @@
+repos:
+  - repo: local
+    hooks:
+      - id: add-trailing-comma
+        name: add-trailing-comma
+        entry: add-trailing-comma
+        args:
+          - --py36-plus
+        types: [ python ]
+        language: system
+      - id: autoflake
+        name: autoflake
+        entry: autoflake
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --ignore-init-module-imports
+          - --remove-unused-variables
+          - --verbose
+        types: [ python ]
+        language: system
+      - id: black
+        name: black
+        entry: black
+        args:
+          - --quiet
+          - --line-length=120
+          - --target-version=py36
+        types: [ python ]
+        language: system
+  - repo: local
+    hooks:
+      - id: flake8
+        name: flake8
+        entry: flake8
+        types: [ python ]
+        language: system

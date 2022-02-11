@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "pytest-duration"
+version = "1.0.1"
+description = "Pytest plugin reporting fixtures and test functions execution time."
+authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/blake-r/pytest-duration"
+repository = "https://github.com/blake-r/pytest-duration"
+keywords = ["test"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Testing",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Framework :: Pytest",
+]
+include = ["LICENSE"]
+
+[tool.poetry.plugins."pytest11"]
+pytest-duration = "pytest_duration"
+
+[tool.poetry.dependencies]
+python = ">=3.6.2"
+pytest = ">=4.6"
+black = "^22.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=6.2"
+freezegun = "^1.1.0"
+pytest-xdist = "^1.34"
+pre-commit = "^2.17.0"
+flake8 = "^4.0.1"
+add-trailing-comma = "^2.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
