@@ -30,5 +30,6 @@ jobs:
       - name: Run tests
         run: |
           pip install poetry
+          poetry config virtualenvs.create false
           poetry install
-          poetry run pytest --showlocals -vv tests
+          pytest --showlocals -vv tests
