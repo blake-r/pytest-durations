@@ -1,9 +1,14 @@
+from typing import NoReturn
+
+from _pytest.config import Config
+
 from pytest_duration.options import pytest_addoption
-
-from pytest_duration.plugin import pytest_addhooks, pytest_fixture_setup, pytest_runtest_call, pytest_runtest_setup, \
-    pytest_runtest_teardown, pytest_terminal_summary
-
-__all__ = ["pytest_addoption", "pytest_addhooks", "pytest_fixture_setup", "pytest_runtest_call", "pytest_runtest_setup",
-           "pytest_runtest_teardown", "pytest_terminal_summary"]
+from pytest_duration.plugin import PytestDurationPlugin
 
 __version__ = '0.1.0'
+
+
+def pytest_configure(config: "Config") -> NoReturn:
+    if not config.getoption("--pytest-durations"):
+        return
+    config.pluginmanager.register(PytestDurationPlugin())

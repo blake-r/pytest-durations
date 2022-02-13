@@ -1,0 +1,14 @@
+repos:
+  - repo: local
+    hooks:
+      - id: autoflake
+        name: autoflake
+        entry: autoflake
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --ignore-init-module-imports
+          - --remove-unused-variables
+          - --verbose
+        types: [ python ]
+        language: system

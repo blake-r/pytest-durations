@@ -1,4 +1,17 @@
+from typing import List, Iterable
+
 import pytest
+
+_EXPECTED_OUTPUT_LINES = [
+    "fixture duration top",
+    "grand total   7",
+    "test call duration top",
+    "grand total   2",
+    "test setup duration top",
+    "grand total   2",
+    "test teardown duration top",
+    "grand total   2",
+]
 
 
 @pytest.fixture(autouse=True)
@@ -42,23 +55,30 @@ def sample_testfile(pytester):
 def test_basic(pytester, sample_testfile):
     result = pytester.runpytest()
     result.assert_outcomes(passed=2)
-    result.parse_summary_nouns([
-        "fixture duration top",
-        "grand total   7",
-        "test call duration top",
-        "grand total   2",
-        "test setup duration top",
-        "grand total   2",
-        "test teardown duration top",
-        "grand total   2",
-    ])
+    _assert_output_lines(result.outlines, _EXPECTED_OUTPUT_LINES)
+
+
+def test_durations_min_option(pytester, sample_testfile):
+    result = pytester.runpytest("--pytest-durations-min", "0")
+    result.assert_outcomes(passed=2)
+    _assert_output_lines(result.outlines, _EXPECTED_OUTPUT_LINES)
 
 
 def test_xdist(pytester, sample_testfile):
     result = pytester.runpytest("-n", "2")
     result.assert_outcomes(passed=2)
+    _assert_output_lines(result.outlines, _EXPECTED_OUTPUT_LINES)
 
 
-def test_durations_min_option(pytester, sample_testfile):
-    result = pytester.runpytest("--ng-durations-min", "0")
-    result.assert_outcomes(passed=2)
+def _assert_output_lines(outlines: Iterable[str], expected_lines: List[str]):
+    outlines_iter = iter(outlines)
+    for expected_line in expected_lines:
+        found = False
+        lines = []
+        for outline in outlines_iter:
+            if expected_line in outline:
+                found = True
+                break
+            lines.append(outline)
+        if not found:
+            raise AssertionError(f"Line `{expected_line}` is not found in output", lines)
