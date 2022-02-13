@@ -53,7 +53,7 @@ def test_report_measurements_with_time_limit(fake_reporter, sample_measurements)
         reporter=fake_reporter,
         section_name=_SAMPLE_SECTION_NAME,
         measurements=sample_measurements,
-        min_duration=1.0,
+        duration_min=1.0,
     )
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),

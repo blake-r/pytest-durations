@@ -1,5 +1,8 @@
-from _pytest.fixtures import FixtureDef
-from _pytest.nodes import Item
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from _pytest.fixtures import FixtureDef
+    from _pytest.nodes import Item
 
 
 def _get_fixture_key(fixturedef: "FixtureDef") -> str:

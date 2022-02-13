@@ -20,7 +20,7 @@ def report_measurements(
     reporter: "TerminalReporter",
     section_name: str,
     measurements: Dict[str, List[float]],
-    min_duration: float = -1.0,
+    duration_min: float = -1.0,
     durations: int = 0,
 ) -> NoReturn:
     """Add time measurement results to reporter."""
@@ -37,7 +37,7 @@ def report_measurements(
     ]
     # verbose values are limited by minimal time and number of rows
     time_values_verbose = [
-        values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= min_duration
+        values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= duration_min
     ]
     time_values_verbose.sort(key=itemgetter(_SORT_COLUMN_IDX), reverse=True)
     time_values_verbose = time_values_verbose[:durations] if durations else time_values_verbose

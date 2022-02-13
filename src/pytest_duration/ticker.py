@@ -1,9 +1,14 @@
+from time import monotonic
+
 try:
     # if freezegun is installed, use its stored real function
-    from freezegun.api import real_monotonic as monotonic
+    import freezegun
 except ImportError:
-    from time import monotonic
+    pass
+else:
+    freezegun.configure(extend_ignore_list=[__name__])
 
 
-# Return uniformly increasing value in seconds.
-get_current_ticks = monotonic
+def get_current_ticks():
+    """Return uniformly increasing value in seconds."""
+    return monotonic()

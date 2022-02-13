@@ -125,13 +125,15 @@ class PytestDurationPlugin:
         config: "Config",
     ) -> NoReturn:
         """Add the fixture time report."""
+        durations = config.getoption("--pytest-durations")
+        durations_min = config.getoption("--pytest-durations-min")
         for category, name in Category.report_items():
             report_measurements(
                 reporter=terminalreporter,
                 section_name=f"{name} duration top",
                 measurements=self.measurements[category],
-                min_duration=config.getoption("--pytest-durations-min"),
-                durations=config.getoption("--pytest-durations"),
+                duration_min=durations_min,
+                durations=durations,
             )
 
     @contextmanager

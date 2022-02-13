@@ -1,14 +1,3 @@
-from typing import NoReturn
-
-from _pytest.config import Config
-
-from pytest_duration.options import pytest_addoption  # noqa: F401
-from pytest_duration.plugin import PytestDurationPlugin
+from pytest_duration.options import pytest_addoption, pytest_configure  # noqa: F401
 
 __version__ = "0.1.0"
-
-
-def pytest_configure(config: "Config") -> NoReturn:
-    if not config.getoption("--pytest-durations"):
-        return
-    config.pluginmanager.register(PytestDurationPlugin())
