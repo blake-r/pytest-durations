@@ -1,4 +1,4 @@
-from unittest.mock import Mock, call, create_autospec
+from unittest.mock import call, create_autospec
 
 import pytest
 from _pytest.terminal import TerminalReporter
@@ -38,7 +38,7 @@ def test_report_measurements(fake_reporter, sample_measurements):
 
 def test_report_measurements_empty_results(fake_reporter):
     """Show header and zeroed footer rows only (empty report)."""
-    report_measurements(reporter=fake_reporter, section_name="sample section", measurements={},)
+    report_measurements(reporter=fake_reporter, section_name="sample section", measurements={})
     assert fake_reporter.line.call_args_list == [
         call("total   name        num avg     min     max    "),
         call("0:00:00 grand total   0 0:00:00 0:00:00 0:00:00"),

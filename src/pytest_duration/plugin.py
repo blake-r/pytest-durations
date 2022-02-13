@@ -118,8 +118,10 @@ class PytestDurationPlugin:
             node_measurements = node.workeroutput[_WORKEROUTPUT_KEY]
             self._extend_measurements(node_measurements)
 
-    def pytest_terminal_summary(self, terminalreporter: "TerminalReporter", exitstatus: "ExitCode",
-                                config: "Config") -> NoReturn:
+    def pytest_terminal_summary(
+        self, terminalreporter: "TerminalReporter", exitstatus: "ExitCode",
+        config: "Config",
+    ) -> NoReturn:
         """Add the fixture time report."""
         for category, name in Category.report_items():
             report_measurements(

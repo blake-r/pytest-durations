@@ -19,7 +19,8 @@ pytest = ">=6.2"
 freezegun = "^1.1.0"
 pytest-xdist = "^1.34"
 pre-commit = "^2.17.0"
-
+flake8 = "^4.0.1"
+add-trailing-comma = "^2.2.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

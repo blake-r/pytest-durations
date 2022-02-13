@@ -15,12 +15,12 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         metavar="N",
         type=int,
         default=DEFAULT_DURATIONS,
-        help=f"Show N slowest setup/test durations (N=0 to disable report). Default {DEFAULT_DURATIONS}"
+        help=f"Show N slowest setup/test durations (N=0 to disable report). Default {DEFAULT_DURATIONS}",
     )
     group.addoption(
         "--pytest-durations-min",
         metavar="N",
         type=float,
         default=DEFAULT_DURATIONS_MIN,
-        help=f"Minimal duration in seconds for inclusion in slowest list. Default {DEFAULT_DURATIONS_MIN}"
+        help=f"Minimal duration in seconds for inclusion in slowest list. Default {DEFAULT_DURATIONS_MIN}",
     )
