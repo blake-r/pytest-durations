@@ -5,7 +5,12 @@ description = "Pytest plugin reporting fixtures and test functions execution tim
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/blake-r/pytest-duration"
-classifiers = ["Framework :: Pytest"]
+classifiers = [
+    "Development Status :: 5 — Production/Stable”,
+    "Framework :: Pytest",
+]
+readme = "README.md"
+include = ["LICENSE"]
 
 [tool.poetry.plugins."pytest11"]
 pytest-duration = "pytest_duration"
