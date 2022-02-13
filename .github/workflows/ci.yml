@@ -31,4 +31,4 @@ jobs:
         run: |
           pip install poetry
           poetry install
-          pytest --showlocals -vv tests
+          poetry run pytest --showlocals -vv tests
