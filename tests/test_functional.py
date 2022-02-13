@@ -22,7 +22,7 @@ def sample_testfile(pytester):
         @pytest.fixture
         def fixture_default():
             return None
-            
+
         @pytest.fixture(autouse=True)
         def fixture_autouse():
             return None

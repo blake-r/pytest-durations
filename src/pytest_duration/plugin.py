@@ -119,7 +119,9 @@ class PytestDurationPlugin:
             self._extend_measurements(node_measurements)
 
     def pytest_terminal_summary(
-        self, terminalreporter: "TerminalReporter", exitstatus: "ExitCode",
+        self,
+        terminalreporter: "TerminalReporter",
+        exitstatus: "ExitCode",
         config: "Config",
     ) -> NoReturn:
         """Add the fixture time report."""

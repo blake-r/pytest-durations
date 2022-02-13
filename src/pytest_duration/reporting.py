@@ -36,7 +36,9 @@ def report_measurements(
         for name, times in measurements.items()
     ]
     # verbose values are limited by minimal time and number of rows
-    time_values_verbose = [values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= min_duration]
+    time_values_verbose = [
+        values for values in time_values_all if values[_SUM_COLUMN_IDX].total_seconds() >= min_duration
+    ]
     time_values_verbose.sort(key=itemgetter(_SORT_COLUMN_IDX), reverse=True)
     time_values_verbose = time_values_verbose[:durations] if durations else time_values_verbose
 

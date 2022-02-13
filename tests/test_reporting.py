@@ -26,7 +26,9 @@ def sample_measurements():
 def test_report_measurements(fake_reporter, sample_measurements):
     """Show all fixture in the reverse order of their total time."""
     report_measurements(
-        reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements,
+        reporter=fake_reporter,
+        section_name=_SAMPLE_SECTION_NAME,
+        measurements=sample_measurements,
     )
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),
@@ -48,7 +50,10 @@ def test_report_measurements_empty_results(fake_reporter):
 def test_report_measurements_with_time_limit(fake_reporter, sample_measurements):
     """Show fixtures with total time more than a limit (1 second)."""
     report_measurements(
-        reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements, min_duration=1.0,
+        reporter=fake_reporter,
+        section_name=_SAMPLE_SECTION_NAME,
+        measurements=sample_measurements,
+        min_duration=1.0,
     )
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),
@@ -60,7 +65,10 @@ def test_report_measurements_with_time_limit(fake_reporter, sample_measurements)
 def test_report_measurements_with_rows_limit(fake_reporter, sample_measurements):
     """Report a single line of fixture with the top total time."""
     report_measurements(
-        reporter=fake_reporter, section_name=_SAMPLE_SECTION_NAME, measurements=sample_measurements, durations=1,
+        reporter=fake_reporter,
+        section_name=_SAMPLE_SECTION_NAME,
+        measurements=sample_measurements,
+        durations=1,
     )
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),

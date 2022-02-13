@@ -11,8 +11,9 @@ classifiers = ["Framework :: Pytest"]
 pytest-duration = "pytest_duration"
 
 [tool.poetry.dependencies]
-python = ">=3.6.1"
+python = ">=3.6.2"
 pytest = ">=4.6"
+black = "^22.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6.2"
