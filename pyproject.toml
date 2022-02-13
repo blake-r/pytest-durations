@@ -6,7 +6,7 @@ authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/blake-r/pytest-duration"
 classifiers = [
-    "Development Status :: 5 — Production/Stable",
+    "Development Status :: 5 - Production/Stable",
     "Framework :: Pytest",
 ]
 readme = "README.md"
