@@ -1,3 +1,5 @@
+## Introduction
+
 A pytest plugin to measure fixtures and tests duration.
 
 In order to get the pure test setup/teardown durations, plugin subtracts time taken by shared fixtures (which scope is larger than "function").
