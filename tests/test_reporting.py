@@ -34,7 +34,7 @@ def test_report_measurements(fake_reporter, sample_measurements):
         call("total          name        num avg            min            max           "),
         call("0:00:03.700000    fixture2   3 0:00:01.200000 0:00:01.100000 0:00:01.400000"),
         call("0:00:00.700000    fixture1   3 0:00:00.200000 0:00:00.100000 0:00:00.400000"),
-        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.600000 0:00:00.900000"),
+        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.100000 0:00:01.400000"),
     ]
 
 
@@ -58,7 +58,7 @@ def test_report_measurements_with_time_limit(fake_reporter, sample_measurements)
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),
         call("0:00:03.700000    fixture2   3 0:00:01.200000 0:00:01.100000 0:00:01.400000"),
-        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.600000 0:00:00.900000"),
+        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.100000 0:00:01.400000"),
     ]
 
 
@@ -73,5 +73,5 @@ def test_report_measurements_with_rows_limit(fake_reporter, sample_measurements)
     assert fake_reporter.line.call_args_list == [
         call("total          name        num avg            min            max           "),
         call("0:00:03.700000    fixture2   3 0:00:01.200000 0:00:01.100000 0:00:01.400000"),
-        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.600000 0:00:00.900000"),
+        call("0:00:04.400000 grand total   6 0:00:00.700000 0:00:00.100000 0:00:01.400000"),
     ]

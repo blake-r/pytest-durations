@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "pytest-durations"
-version = "1.0.0"
+version = "1.0.1"
 description = "Pytest plugin reporting fixtures and test functions execution time."
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/blake-r/pytest-durations"
 repository = "https://github.com/blake-r/pytest-durations"
-keywords = ["test"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
