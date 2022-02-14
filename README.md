@@ -50,6 +50,6 @@ $ pytest tests
 
 ## Change Log
 
-### 1.0.0 (Feb 14, 2022)
+### 1.0.1 (Feb 14, 2022)
  
 * First Release
