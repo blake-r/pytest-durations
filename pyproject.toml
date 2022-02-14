@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytest-duration"
-version = "1.0.0"
+version = "1.0.1"
 description = "Pytest plugin reporting fixtures and test functions execution time."
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
