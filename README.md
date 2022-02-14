@@ -50,6 +50,11 @@ $ pytest tests
 
 ## Change Log
 
+### 1.0.1 (Feb 14, 2022)
+
+* Grand total row shows real min/max values instead of averages
+
+
 ### 1.0.0 (Feb 14, 2022)
  
 * First Release
