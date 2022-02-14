@@ -1,6 +1,4 @@
-## Project description
-
-A pytest plugin for measuring fixtures and tests duration.
+A pytest plugin to measure fixtures and tests duration.
 
 In order to get the pure test setup/teardown durations, plugin subtracts time taken by shared fixtures (which scope is larger than "function").
 
@@ -39,7 +37,7 @@ total          name        num avg            min            max
 
 ## Development
 
-Project uses [poetry](https://python-poetry.org/) for dependencies management, pytest for testing and pre-commit for style formatting.
+Project uses [poetry](https://python-poetry.org/) for dependencies management, [pytest](https://pytest.org/) for testing and [pre-commit](https://pre-commit.com/) for style formatting.
 
 ```shell
 $ pip install poetry
