@@ -1,6 +1,6 @@
 from typing import Type, TYPE_CHECKING
 
-from pytest_duration.ticker import get_current_ticks
+from pytest_durations.ticker import get_current_ticks
 
 if TYPE_CHECKING:
     from types import TracebackType

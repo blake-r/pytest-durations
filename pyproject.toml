@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "pytest-duration"
-version = "1.0.1"
+name = "pytest-durations"
+version = "1.0.0"
 description = "Pytest plugin reporting fixtures and test functions execution time."
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/blake-r/pytest-duration"
-repository = "https://github.com/blake-r/pytest-duration"
+homepage = "https://github.com/blake-r/pytest-durations"
+repository = "https://github.com/blake-r/pytest-durations"
 keywords = ["test"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -25,20 +25,21 @@ classifiers = [
 include = ["LICENSE"]
 
 [tool.poetry.plugins."pytest11"]
-pytest-duration = "pytest_duration"
+pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
 python = ">=3.6.2"
 pytest = ">=4.6"
-black = "^22.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6.2"
 freezegun = "^1.1.0"
 pytest-xdist = "^1.34"
 pre-commit = "^2.17.0"
-flake8 = "^4.0.1"
 add-trailing-comma = "^2.2.1"
+autoflake = "^1.4"
+black = "^22.1.0"
+flake8 = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

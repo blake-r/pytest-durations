@@ -9,7 +9,7 @@ DEFAULT_DURATIONS_MIN = 0.005
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> NoReturn:
-    group = parser.getgroup("pytest-duration")
+    group = parser.getgroup("pytest-durations")
     group.addoption(
         "--pytest-durations",
         metavar="N",
@@ -30,6 +30,6 @@ def pytest_configure(config: "Config") -> NoReturn:
     if not config.getoption("--pytest-durations"):
         return
 
-    from pytest_duration.plugin import PytestDurationPlugin
+    from pytest_durations.plugin import PytestDurationPlugin
 
     config.pluginmanager.register(PytestDurationPlugin())

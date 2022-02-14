@@ -3,7 +3,7 @@ from unittest.mock import call, create_autospec
 import pytest
 from _pytest.terminal import TerminalReporter
 
-from pytest_duration.reporting import report_measurements
+from pytest_durations.reporting import report_measurements
 
 _SAMPLE_SECTION_NAME = "sample section"
 

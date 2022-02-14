@@ -3,7 +3,7 @@ from datetime import datetime
 from _pytest.python_api import approx
 from freezegun import freeze_time
 
-from pytest_duration.ticker import get_current_ticks
+from pytest_durations.ticker import get_current_ticks
 
 
 def test_get_current_ticks_frozen():

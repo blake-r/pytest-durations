@@ -1,13 +1,13 @@
 ## Introduction
 
-A pytest plugin to measure fixtures and tests duration.
+A pytest plugin to measure fixture and test durations.
 
-In order to get the pure test setup/teardown durations, plugin subtracts time taken by shared fixtures (which scope is larger than "function").
+In order to get the pure test setup/teardown durations, plugin subtracts time taken by fixtures which scope is larger than "function".
 
 ## Installation
 
 ```shell
-$ pip install pytest-duration
+$ pip install pytest-durations
 ```
 
 ## Example or report
@@ -39,7 +39,7 @@ total          name        num avg            min            max
 
 ## Development
 
-Project uses [poetry](https://python-poetry.org/) for dependencies management, [pytest](https://pytest.org/) for testing and [pre-commit](https://pre-commit.com/) for style formatting.
+Project uses [poetry](https://python-poetry.org/) for dependencies management, [pytest](https://pytest.org/) for testing and [pre-commit](https://pre-commit.com/) for coding standard checks.
 
 ```shell
 $ pip install poetry
@@ -50,6 +50,6 @@ $ pytest tests
 
 ## Change Log
 
-### 1.0.1 (Feb 14, 2022)
+### 1.0.0 (Feb 14, 2022)
  
 * First Release

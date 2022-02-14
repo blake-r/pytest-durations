@@ -3,10 +3,10 @@ from typing import Any, NoReturn, Optional, TYPE_CHECKING, Iterable, Tuple, Dict
 
 import pytest
 
-from pytest_duration.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
-from pytest_duration.measure import MeasureDuration
-from pytest_duration.reporting import report_measurements
-from pytest_duration.ticker import get_current_ticks
+from pytest_durations.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
+from pytest_durations.measure import MeasureDuration
+from pytest_durations.reporting import report_measurements
+from pytest_durations.ticker import get_current_ticks
 
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 MeasurementsT = Dict[str, Dict[str, List[float]]]
 
-_WORKEROUTPUT_KEY = "pytest_duration"
+_WORKEROUTPUT_KEY = "pytest_durations"
 
 
 class Category:
