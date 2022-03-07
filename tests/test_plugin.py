@@ -56,7 +56,6 @@ def sample_testfile(pytester):
         (),
         ("--pytest-durations", "1"),
         ("--pytest-durations-min", "0"),
-        ("--numprocesses", "2"),  # xdist
     ),
 )
 def test_plugin_with_options(pytester, sample_testfile, options):
@@ -71,3 +70,15 @@ def test_plugin_disable(pytester, sample_testfile):
     result = pytester.runpytest("--pytest-durations", "0")
     result.assert_outcomes(passed=2)
     result.stdout.no_fnmatch_line("*duration top*")
+
+
+def test_plugin_xdist_disabled(pytester, sample_testfile):
+    """Run when pytest-xdist is absent or disabled should be successful (#3)."""
+    result = pytester.runpytest("-p", "no:xdist")
+    result.assert_outcomes(passed=2)
+
+
+def test_plugin_xdist_enabled(pytester, sample_testfile):
+    """Run when pytest-xdist is absent or disabled should be successful (#3)."""
+    result = pytester.runpytest("--numprocesses", "2")
+    result.assert_outcomes(passed=2)

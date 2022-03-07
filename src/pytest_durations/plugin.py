@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Any, NoReturn, Optional, TYPE_CHECKING, Iterable, Tuple, Dict, List, Union
+from typing import Any, Iterable, NoReturn, Optional, TYPE_CHECKING, Tuple
 
 import pytest
 
@@ -11,14 +11,9 @@ from pytest_durations.ticker import get_current_ticks
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
     from _pytest.fixtures import FixtureDef, SubRequest
-    from _pytest.main import Session
     from _pytest.nodes import Item
     from _pytest.terminal import TerminalReporter
-    from xdist.workermanage import WorkerController
-
-MeasurementsT = Dict[str, Dict[str, List[float]]]
-
-_WORKEROUTPUT_KEY = "pytest_durations"
+    from pytest_durations.types import MeasurementsT
 
 
 class Category:
@@ -39,7 +34,7 @@ class Category:
 
 
 class PytestDurationPlugin:
-    measurements: MeasurementsT
+    measurements: "MeasurementsT"
     shared_fixture_duration: float
     last_fixture_teardown_start: float
 
@@ -102,22 +97,6 @@ class PytestDurationPlugin:
             measurement.duration -= self.shared_fixture_duration
         self.shared_fixture_duration = 0.0
 
-    @pytest.hookimpl(tryfirst=True)
-    def pytest_sessionfinish(self, session: "Session", exitstatus: Union[int, "ExitCode"]) -> NoReturn:
-        """Send measurements to the master process if the current session runs under pytest-xdist."""
-        # for xdist, results should be added to worker output
-        workeroutput = getattr(session.config, "workeroutput", None)
-        if workeroutput is not None:
-            workeroutput[_WORKEROUTPUT_KEY] = self.measurements
-
-    def pytest_testnodedown(self, node: "WorkerController", error: Optional[Any]) -> NoReturn:
-        """Merge measurements from slave processes if the current sesions runs under pytest-xdist."""
-        # for xdist, results should be accumulated from workers
-        workeroutput = getattr(node, "workeroutput", None)
-        if workeroutput is not None:
-            node_measurements = node.workeroutput[_WORKEROUTPUT_KEY]
-            self._extend_measurements(node_measurements)
-
     def pytest_terminal_summary(
         self,
         terminalreporter: "TerminalReporter",
@@ -148,13 +127,3 @@ class PytestDurationPlugin:
             measurements[key].append(measurement.duration)
         except KeyError:
             measurements[key] = [measurement.duration]
-
-    def _extend_measurements(self, src: MeasurementsT) -> NoReturn:
-        """Merge measured durations by appending new value series to the end of existing ones."""
-        for category, src_series in src.items():
-            dst_series = self.measurements[category]
-            for key, values in src_series.items():
-                try:
-                    dst_series[key].extend(values)
-                except KeyError:
-                    dst_series[key] = values

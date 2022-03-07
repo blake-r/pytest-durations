@@ -30,8 +30,7 @@ jobs:
       - name: Prepare for tests run
         run: |
           pip install poetry
-          poetry config virtualenvs.create false
           poetry install
       - name: Run tests
         run: |
-          pytest --showlocals -vv tests
+          pytest --showlocals -vv --cov
