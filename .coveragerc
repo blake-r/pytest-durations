@@ -1,0 +1,18 @@
+[run]
+branch = true
+source = src
+
+[report]
+exclude_lines =
+    def __repr__
+    if self\.debug
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+omit =
+    */types.py
+show_missing = true
+skip_covered = true
+skip_empty = true

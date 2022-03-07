@@ -32,4 +32,11 @@ def pytest_configure(config: "Config") -> NoReturn:
 
     from pytest_durations.plugin import PytestDurationPlugin
 
-    config.pluginmanager.register(PytestDurationPlugin())
+    pluginmanager = config.pluginmanager
+
+    if pluginmanager.hasplugin("xdist"):
+        from pytest_durations.xdist import PytestDurationXdistMixin
+
+        PytestDurationPlugin = type("PytestDurationPlugin", (PytestDurationPlugin, PytestDurationXdistMixin), {})
+
+    pluginmanager.register(PytestDurationPlugin())

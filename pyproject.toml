@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytest-durations"
-version = "1.0.1"
+version = "1.1.0"
 description = "Pytest plugin reporting fixtures and test functions execution time."
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
@@ -39,6 +39,7 @@ add-trailing-comma = "^2.2.1"
 autoflake = "^1.4"
 black = "^22.1.0"
 flake8 = "^4.0.1"
+pytest-cov = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
