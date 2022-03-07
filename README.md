@@ -50,10 +50,13 @@ $ pytest tests
 
 ## Change Log
 
+### 1.1.0 (Mar 7, 2022)
+
+* Do not interoperate with xdist if it is disabled or absent
+
 ### 1.0.1 (Feb 14, 2022)
 
 * Grand total row shows real min/max values instead of averages
-
 
 ### 1.0.0 (Feb 14, 2022)
  
