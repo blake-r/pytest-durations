@@ -1,16 +1,5 @@
 import pytest
 
-_EXPECTED_OUTPUT_LINES = [
-    "*fixture duration top*",
-    "*grand total   7*",
-    "*test call duration top*",
-    "*grand total   2*",
-    "*test setup duration top*",
-    "*grand total   2*",
-    "*test teardown duration top*",
-    "*grand total   2*",
-]
-
 
 @pytest.fixture(autouse=True)
 def sample_testfile(pytester):
@@ -50,6 +39,20 @@ def sample_testfile(pytester):
     pytester.makepyfile(code)
 
 
+@pytest.fixture
+def expected_output_lines():
+    return [
+        "*fixture duration top*",
+        "*grand total   7*",
+        "*test call duration top*",
+        "*grand total   2*",
+        "*test setup duration top*",
+        "*grand total   2*",
+        "*test teardown duration top*",
+        "*grand total   2*",
+    ]
+
+
 @pytest.mark.parametrize(
     "options",
     (
@@ -58,11 +61,11 @@ def sample_testfile(pytester):
         ("--pytest-durations-min", "0"),
     ),
 )
-def test_plugin_with_options(pytester, sample_testfile, options):
+def test_plugin_with_options(pytester, sample_testfile, options, expected_output_lines):
     """Plugin should show the same grand total lines for provided options."""
     result = pytester.runpytest(*options)
     result.assert_outcomes(passed=2)
-    result.stdout.fnmatch_lines(_EXPECTED_OUTPUT_LINES)
+    result.stdout.fnmatch_lines(expected_output_lines)
 
 
 def test_plugin_disable(pytester, sample_testfile):

@@ -1,11 +1,7 @@
 from datetime import timedelta
 from operator import itemgetter
 from statistics import median
-from typing import Callable, Dict, Iterable, List, NoReturn, TYPE_CHECKING, Tuple
-
-if TYPE_CHECKING:
-    from _pytest.terminal import TerminalReporter
-
+from typing import Callable, Collection, Dict, Iterable, List, Tuple, cast
 
 ReportRowT = Tuple[str, str, str, str, str, str]
 TimeValuesT = Tuple[str, int, float, float, float, float]
@@ -17,14 +13,12 @@ _COLUMNS_ORDER = (5, 0, 1, 4, 2, 3)  # sum, name, calls, avg, min, max
 _GRAND_TOTAL_STR = "grand total"
 
 
-def report_measurements(
-    reporter: "TerminalReporter",
-    section_name: str,
+def get_report_rows(
     measurements: Dict[str, List[float]],
     duration_min: float = -1.0,
     durations: int = 0,
-) -> NoReturn:
-    """Add time measurement results to reporter."""
+) -> List[ReportRowT]:
+    """Return time measurement result rows."""
     time_values_all = [
         (name, len(times), min(times), max(times), median(times), sum(times)) for name, times in measurements.items()
     ]
@@ -38,12 +32,19 @@ def report_measurements(
         *_get_report_timing_rows(time_values=time_values_verbose),
         _get_report_footer_row(time_values=time_values_all),
     ]
-    widths = tuple(max(map(len, map(itemgetter(x), report_rows))) for x in range(len(report_rows[0])))
-    reporter.ensure_newline()
-    reporter.section(section_name, sep="=")
-    for idx, row in enumerate(report_rows):
-        content = " ".join(f"{row[i]: {'>' if idx else '<'}{widths[i]}}" for i in _COLUMNS_ORDER)
-        reporter.line(content)
+    return [cast(ReportRowT, tuple(report_row[i] for i in _COLUMNS_ORDER)) for report_row in report_rows]
+
+
+def get_report_max_widths(report_rows: Collection[ReportRowT]) -> Tuple[int, int, int, int, int, int]:
+    """Return report columns max width."""
+    return (
+        max(len(row[0]) for row in report_rows),
+        max(len(row[1]) for row in report_rows),
+        max(len(row[2]) for row in report_rows),
+        max(len(row[3]) for row in report_rows),
+        max(len(row[4]) for row in report_rows),
+        max(len(row[5]) for row in report_rows),
+    )
 
 
 def _get_report_header_row() -> ReportRowT:
