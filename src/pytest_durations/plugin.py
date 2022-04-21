@@ -5,7 +5,7 @@ import pytest
 
 from pytest_durations.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
 from pytest_durations.measure import MeasureDuration
-from pytest_durations.reporting import report_measurements
+from pytest_durations.reporting import get_report_rows, get_report_max_widths
 from pytest_durations.ticker import get_current_ticks
 
 if TYPE_CHECKING:
@@ -104,16 +104,25 @@ class PytestDurationPlugin:
         config: "Config",
     ) -> NoReturn:
         """Add the fixture time report."""
+        fullwidth = config.get_terminal_writer().fullwidth
         durations = config.getoption("--pytest-durations")
         durations_min = config.getoption("--pytest-durations-min")
+        reports = []
+        widths = [0] * 5
         for category, name in Category.report_items():
-            report_measurements(
-                reporter=terminalreporter,
-                section_name=f"{name} duration top",
+            category_report_rows = get_report_rows(
                 measurements=self.measurements[category],
                 duration_min=durations_min,
                 durations=durations,
             )
+            reports.append((f"{name} duration top", category_report_rows))
+            widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows))]
+        fullwidth = max(fullwidth, sum(widths) + len(widths) - 1)
+        for section_name, category_report_rows in reports:
+            terminalreporter.write_sep(sep="=", title=section_name, fullwidth=fullwidth)
+            for idx, row in enumerate(category_report_rows):
+                content = " ".join(f"{col: {'>' if idx else '<'}{width}}" for col, width in zip(row, widths))
+                terminalreporter.line(content)
 
     @contextmanager
     def _measure(self, category: str, key: str) -> Iterable["MeasureDuration"]:
