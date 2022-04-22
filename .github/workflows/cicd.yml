@@ -30,6 +30,7 @@ jobs:
       - name: Prepare artefacts
         run: |
           pip install --no-cache-dir poetry
+          poetry install --no-root
           poetry build
           pip install --no-cache-dir dist/*.whl
       - name: Run tests
