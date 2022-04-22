@@ -4,8 +4,6 @@ import pytest
 
 from pytest_durations.reporting import get_report_rows, get_report_max_widths
 
-_SAMPLE_SECTION_NAME = "sample section"
-
 
 @pytest.fixture
 def sample_measurements() -> Dict[str, List[float]]:

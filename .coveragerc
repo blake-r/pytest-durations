@@ -16,3 +16,4 @@ omit =
 show_missing = true
 skip_covered = true
 skip_empty = true
+fail_under = 100
