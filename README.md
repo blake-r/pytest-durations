@@ -14,15 +14,15 @@ $ pip install pytest-durations
 
 ```
 ============================= fixture duration top =============================
-total          name          num avg            min            max           
-0:00:00.063821 fake_reporter   4 0:00:00.015300 0:00:00.014831 0:00:00.018389
-0:00:00.068513   grand total  22 0:00:00.000117 0:00:00.000110 0:00:00.000132
+total          name                                     num avg            min            max           
+0:00:00.063821                            fake_reporter   4 0:00:00.015300 0:00:00.014831 0:00:00.018389
+0:00:00.068513                              grand total  22 0:00:00.000117 0:00:00.000110 0:00:00.000132
 ============================ test call duration top ============================
-total          name                          num avg            min            max           
-0:00:00.527693      test_plugin_with_options   4 0:00:00.041085 0:00:00.040256 0:00:00.405267
-0:00:00.041535           test_plugin_disable   1 0:00:00.041535 0:00:00.041535 0:00:00.041535
-0:00:00.018607 test_get_current_ticks_frozen   1 0:00:00.018607 0:00:00.018607 0:00:00.018607
-0:00:00.590297                   grand total  10 0:00:00.000706 0:00:00.000706 0:00:00.000706
+total          name                                     num avg            min            max           
+0:00:00.527693                 test_plugin_with_options   4 0:00:00.041085 0:00:00.040256 0:00:00.405267
+0:00:00.041535                      test_plugin_disable   1 0:00:00.041535 0:00:00.041535 0:00:00.041535
+0:00:00.018607            test_get_current_ticks_frozen   1 0:00:00.018607 0:00:00.018607 0:00:00.018607
+0:00:00.590297                              grand total  10 0:00:00.000706 0:00:00.000706 0:00:00.000706
 =========================== test setup duration top ============================
 total          name                                     num avg            min            max           
 0:00:00.018670                 test_report_measurements   1 0:00:00.018670 0:00:00.018670 0:00:00.018670
@@ -32,8 +32,8 @@ total          name                                     num avg            min  
 0:00:00.005076                 test_plugin_with_options   4 0:00:00.001138 0:00:00.001030 0:00:00.001770
 0:00:00.071377                              grand total  10 0:00:00.015079 0:00:00.015079 0:00:00.015079
 ========================== test teardown duration top ==========================
-total          name        num avg            min            max           
-0:00:00.001990 grand total  10 0:00:00.000128 0:00:00.000128 0:00:00.000128
+total          name                                     num avg            min            max           
+0:00:00.001990                              grand total  10 0:00:00.000128 0:00:00.000128 0:00:00.000128
 ============================== 10 passed in 0.71s ==============================
 ```
 
@@ -49,6 +49,12 @@ $ pytest tests
 ```
 
 ## Change Log
+
+### 1.2.0 (Apr 22, 2022)
+
+* Use same width for all reports (#6)
+* Improve test coverage (#7)
+* Continuous delivery GitHub workflow
 
 ### 1.1.0 (Mar 7, 2022)
 
