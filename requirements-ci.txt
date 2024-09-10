@@ -1,4 +1,0 @@
-add-trailing-comma
-autoflake
-black
-flake8

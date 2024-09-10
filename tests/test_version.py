@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poetry.core.pyproject import PyProjectTOML
+from poetry.core.pyproject.toml import PyProjectTOML
 
 from pytest_durations.__init__ import __version__
 
