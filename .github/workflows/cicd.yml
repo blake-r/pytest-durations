@@ -5,11 +5,12 @@ on:
   release:
     types: [ published ]
 
+env:
+  python-version-latest: "3.12"
+
 defaults:
   run:
     shell: bash
-  env:
-    python-version-latest: "3.12"
 
 jobs:
   ci:
