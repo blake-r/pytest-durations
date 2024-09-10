@@ -52,6 +52,11 @@ $ pytest tests
 
 ## Change Log
 
+### 1.3.0 (Sep 11, 2024)
+
+* Update supported Python versions
+* Upgrade development dependencies
+
 ### 1.2.0 (Apr 22, 2022)
 
 * Use same width for all reports (#6)
