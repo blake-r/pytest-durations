@@ -1,3 +1,5 @@
+[![Downloads](https://pepy.tech/badge/pytest-durations/month)](https://pepy.tech/project/pytest-durations)
+
 ## Introduction
 
 A pytest plugin to measure fixture and test durations.
@@ -10,7 +12,7 @@ In order to get the pure test setup/teardown durations, plugin subtracts time ta
 $ pip install pytest-durations
 ```
 
-## Example or report
+## Example of report
 
 ```
 ============================= fixture duration top =============================
@@ -49,6 +51,11 @@ $ pytest tests
 ```
 
 ## Change Log
+
+### 1.3.0 (Sep 11, 2024)
+
+* Update supported Python versions
+* Upgrade development dependencies
 
 ### 1.2.0 (Apr 22, 2022)
 
