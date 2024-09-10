@@ -8,6 +8,8 @@ on:
 defaults:
   run:
     shell: bash
+  env:
+    python-version-latest: "3.12"
 
 jobs:
   ci:
@@ -34,7 +36,7 @@ jobs:
         run: pytest --showlocals -vv --cov
       - name: Upload artefacts
         uses: actions/upload-artifact@v3
-        if: startsWith(github.ref, 'refs/tags') && matrix.python-version == '3.12'
+        if: startsWith(github.ref, 'refs/tags') && matrix.python-version == env.python-version-latest
         with:
           name: dist-${{ matrix.python-version }}
           path: dist/
@@ -48,7 +50,7 @@ jobs:
       - name: Download artefacts
         uses: actions/download-artifact@v3
         with:
-          name: dist-3.12
+          name: dist-${{ env.python-version-latest }}
           path: dist/
       - name: Publish distribution 📦 to Test PyPI
         if: github.event.release.prerelease == true
