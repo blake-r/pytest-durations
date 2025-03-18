@@ -81,7 +81,7 @@ $ pytest tests
 
 ### 1.4.0 (Mar 18, 2025)
 
-* New command line option to write the measure report to a file instead of terminal
+* Add command line option to write the measure report to a file instead of terminal
 
 ### 1.3.1 (Sep 11, 2024)
 
