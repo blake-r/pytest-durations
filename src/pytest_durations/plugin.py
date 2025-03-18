@@ -1,10 +1,11 @@
-from contextlib import contextmanager
-from typing import Any, Iterable, NoReturn, Optional, TYPE_CHECKING, Tuple
+from contextlib import contextmanager, ExitStack
+from typing import Any, Iterable, Optional, TYPE_CHECKING, Tuple
 
 import pytest
 
 from pytest_durations.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
 from pytest_durations.measure import MeasureDuration
+from pytest_durations.options import DEFAULT_RESULT_LOG
 from pytest_durations.reporting import get_report_rows, get_report_max_widths
 from pytest_durations.ticker import get_current_ticks
 
@@ -56,7 +57,7 @@ class PytestDurationPlugin:
             # for shared fixtures, store their last setup duration
             self.shared_fixture_duration += measurement.duration
 
-    def pytest_fixture_post_finalizer(self, fixturedef: "FixtureDef", request: "SubRequest") -> NoReturn:
+    def pytest_fixture_post_finalizer(self, fixturedef: "FixtureDef", request: "SubRequest") -> None:
         """Calculate fixture teardown execution duration."""
         teardown_end = get_current_ticks()
         if _is_shared_fixture(fixturedef):
@@ -67,13 +68,13 @@ class PytestDurationPlugin:
         self.last_fixture_teardown_start = teardown_end
 
     @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_call(self, item: "Item") -> NoReturn:
+    def pytest_runtest_call(self, item: "Item") -> None:
         """Measure test execution duration."""
         with self._measure(Category.TEST_CALL, _get_test_key(item)):
             yield
 
     @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_setup(self, item: "Item") -> NoReturn:
+    def pytest_runtest_setup(self, item: "Item") -> None:
         """Measure test fixtures preparing time.
 
         Excludes time taken by setting up of shared fixtures.
@@ -85,7 +86,7 @@ class PytestDurationPlugin:
         self.shared_fixture_duration = 0.0
 
     @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_teardown(self, item: "Item") -> NoReturn:
+    def pytest_runtest_teardown(self, item: "Item") -> None:
         """Measure test fixture cleaning up time.
 
         Excludes time taken by tearing down of shared fixtures.
@@ -102,9 +103,18 @@ class PytestDurationPlugin:
         terminalreporter: "TerminalReporter",
         exitstatus: "ExitCode",
         config: "Config",
-    ) -> NoReturn:
-        """Add the fixture time report."""
-        fullwidth = config.get_terminal_writer().fullwidth
+    ) -> None:
+        """Write the measured time to a terminal reporter or to a file."""
+        result_log = config.getoption("--pytest-resultlog")
+        with ExitStack() as stack:
+            if result_log != DEFAULT_RESULT_LOG:
+                result_log_fp = stack.enter_context(open(result_log, mode="at"))
+                terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
+            self._report_summary(terminalreporter=terminalreporter, config=config)
+
+    def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
+        """Write time report to the specified terminal reporter."""
+        fullwidth = terminalreporter._tw.fullwidth
         durations = config.getoption("--pytest-durations")
         durations_min = config.getoption("--pytest-durations-min")
         reports = []

@@ -1,4 +1,4 @@
-from typing import Union, NoReturn, Optional, Any, TYPE_CHECKING
+from typing import Union, Optional, Any, TYPE_CHECKING
 
 import pytest
 
@@ -22,7 +22,7 @@ class PytestDurationXdistMixin:
         if workeroutput is not None:
             workeroutput[_WORKEROUTPUT_KEY] = self.measurements
 
-    def pytest_testnodedown(self, node: "WorkerController", error: Optional[Any]) -> NoReturn:
+    def pytest_testnodedown(self, node: "WorkerController", error: Optional[Any]) -> None:
         """Merge measurements from slave processes if the current sesions runs under pytest-xdist."""
         # for xdist, results should be accumulated from workers
         workeroutput = getattr(node, "workeroutput", None)
@@ -30,7 +30,7 @@ class PytestDurationXdistMixin:
             node_measurements = node.workeroutput[_WORKEROUTPUT_KEY]
             self._extend_measurements(node_measurements)
 
-    def _extend_measurements(self, src: "MeasurementsT") -> NoReturn:
+    def _extend_measurements(self, src: "MeasurementsT") -> None:
         """Merge measured durations by appending new value series to the end of existing ones."""
         for category, src_series in src.items():
             dst_series = self.measurements[category]

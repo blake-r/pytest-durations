@@ -1,4 +1,10 @@
+import pathlib
+
 import pytest
+from _pytest.pytester import LineMatcher
+
+SAMPLE_RESULT_LOG_NAME = "result.log"
+SAMPLE_RESULT_LOG_FIRST_LINE = "thefirstline\n"
 
 
 @pytest.fixture(autouse=True)
@@ -40,6 +46,15 @@ def sample_testfile(pytester):
 
 
 @pytest.fixture
+def sample_result_log():
+    result_log = pathlib.Path(SAMPLE_RESULT_LOG_NAME)
+    with result_log.open("wt") as fp:
+        fp.write(SAMPLE_RESULT_LOG_FIRST_LINE)
+    yield result_log
+    result_log.unlink(missing_ok=False)
+
+
+@pytest.fixture
 def expected_output_lines():
     return [
         "*fixture duration top*",
@@ -66,6 +81,16 @@ def test_plugin_with_options(pytester, sample_testfile, options, expected_output
     result = pytester.runpytest(*options)
     result.assert_outcomes(passed=2)
     result.stdout.fnmatch_lines(expected_output_lines)
+
+
+def test_plugin_with_resultlog(pytester, sample_testfile, sample_result_log, expected_output_lines):
+    """Plugin should append summary to a file if the result log option is provided."""
+    expected_output_lines = [SAMPLE_RESULT_LOG_FIRST_LINE, *expected_output_lines]
+    result = pytester.runpytest(*("--pytest-resultlog", SAMPLE_RESULT_LOG_NAME))
+    result.assert_outcomes(passed=2)
+    with sample_result_log.open("rt") as fp:
+        lines = LineMatcher(fp.readlines())
+    lines.fnmatch_lines(expected_output_lines)
 
 
 def test_plugin_disable(pytester, sample_testfile):
