@@ -31,7 +31,7 @@ def fake_config(fake_pluginmanager):
 def test_pytest_addoption(fake_parser, fake_pluginmanager):
     pytest_addoption(fake_parser, fake_pluginmanager)
     assert fake_parser.getgroup.called is True
-    assert fake_parser.getgroup.return_value.addoption.call_count == 2
+    assert fake_parser.getgroup.return_value.addoption.call_count == 3
 
 
 def test_pytest_configure(fake_config, fake_pluginmanager):

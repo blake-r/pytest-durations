@@ -21,6 +21,9 @@ pytest-durations:
   --pytest-durations-min=N
                         Minimal duration in seconds for inclusion in slowest
                         list. Default 0.005
+  --pytest-resultlog=FILE
+                        Result log filename or dash for terminal output.
+                        Default "-"
 ```
 
 Note: please don't be mistaken by `--durations` options which comes from pytest itself.
@@ -75,6 +78,10 @@ $ pytest tests
 ```
 
 ## Change Log
+
+### 1.4.0 (Mar 18, 2025)
+
+* New command line option to write the measure report to a file instead of terminal
 
 ### 1.3.1 (Sep 11, 2024)
 

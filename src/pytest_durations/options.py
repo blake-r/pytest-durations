@@ -1,4 +1,4 @@
-from typing import NoReturn, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from _pytest.config import PytestPluginManager, Config
@@ -6,9 +6,10 @@ if TYPE_CHECKING:
 
 DEFAULT_DURATIONS = 30
 DEFAULT_DURATIONS_MIN = 0.005
+DEFAULT_RESULT_LOG = "-"
 
 
-def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> NoReturn:
+def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
     group = parser.getgroup("pytest-durations")
     group.addoption(
         "--pytest-durations",
@@ -24,9 +25,16 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         default=DEFAULT_DURATIONS_MIN,
         help=f"Minimal duration in seconds for inclusion in slowest list. Default {DEFAULT_DURATIONS_MIN}",
     )
+    group.addoption(
+        "--pytest-resultlog",
+        metavar="FILE",
+        type=str,
+        default=DEFAULT_RESULT_LOG,
+        help=f'Result log filename or dash for terminal output. Default "{DEFAULT_RESULT_LOG}"',
+    )
 
 
-def pytest_configure(config: "Config") -> NoReturn:
+def pytest_configure(config: "Config") -> None:
     if not config.getoption("--pytest-durations"):
         return
 
