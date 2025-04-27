@@ -28,7 +28,7 @@ jobs:
       - name: Prepare artefacts
         run: |
           pip install --no-cache-dir -U pip
-          pip install --no-cache-dir -U poetry
+          pip install --no-cache-dir -U "poetry==2.1.*"
           poetry install --no-root
           pre-commit run --all-files
           poetry build
