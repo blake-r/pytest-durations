@@ -86,10 +86,12 @@ $ pytest tests
 
 ### 1.5.0 (Apr 27, 2025)
 
+* Add Python 3.13 to supported versions
 * Drop Python 3.8 from supported versions, because of time_machine dependency
 * Add time_machine package compatibility (#19)
 * Add README commentary on the difference from pytest builtin "--duration" function (#18)
 * Replace separated code style packages with ruff
+* Upgrade poetry and package dependencies versions
 
 ### 1.4.0 (Mar 18, 2025)
 

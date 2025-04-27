@@ -1,5 +1,5 @@
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, timedelta, timezone
 from importlib import import_module
 from typing import Callable, NamedTuple
 from unittest.mock import patch
@@ -10,6 +10,8 @@ from freezegun import freeze_time
 from time_machine import travel
 
 from pytest_durations.ticker import get_current_ticks
+
+UTC = timezone(timedelta())
 
 
 class TimeHack(NamedTuple):
