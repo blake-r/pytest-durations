@@ -19,7 +19,7 @@ def test_changelog_version():
     changelog_markdown = "## Change Log"
     version_markdown = f"### {__version__} ("
     version_found = False
-    with open(_REPOSITORY_ROOT / "README.md", "rt") as fp:
+    with (_REPOSITORY_ROOT / "README.md").open("rt") as fp:
         changelog_found = False
         for line in fp:
             if not changelog_found:

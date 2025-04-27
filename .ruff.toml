@@ -1,0 +1,22 @@
+line-length = 120
+indent-width = 4
+target-version = "py39"
+include = ["pyproject.toml", "src/**/*.py", "tests/**/*.py"]
+
+[lint]
+select = ["ALL"]
+ignore = ["ANN204", "ANN401", "ARG001", "ARG002", "D107", "FA100"]
+
+[lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"tests/**/*.py" = ["ANN", "ARG001", "D", "PLR2004", "S101"]
+
+[lint.pydocstyle]
+convention = "pep257"
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = true
+line-ending = "auto"
+docstring-code-format = false

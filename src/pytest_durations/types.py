@@ -1,3 +1,3 @@
-from typing import Dict, List
+"""Type declarations module."""
 
-MeasurementsT = Dict[str, Dict[str, List[float]]]
+MeasurementsT = dict[str, dict[str, list[float]]]

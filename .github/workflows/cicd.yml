@@ -1,12 +1,12 @@
 name: cicd
 on:
   pull_request:
-    types: [ opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize, ready_for_review]
   release:
     types: [ published ]
 
 env:
-  python-version-latest: "3.12"
+  python-version-latest: "3.13"
 
 defaults:
   run:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -28,7 +28,7 @@ jobs:
       - name: Prepare artefacts
         run: |
           pip install --no-cache-dir -U pip
-          pip install --no-cache-dir -U poetry
+          pip install --no-cache-dir -U "poetry==2.1.*"
           poetry install --no-root
           pre-commit run --all-files
           poetry build
