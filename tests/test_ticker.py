@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime
+from datetime import UTC, datetime
 from importlib import import_module
 from typing import Callable, NamedTuple
 from unittest.mock import patch
@@ -7,7 +7,6 @@ from unittest.mock import patch
 import pytest
 from _pytest.python_api import approx
 from freezegun import freeze_time
-from pytz import UTC
 from time_machine import travel
 
 from pytest_durations.ticker import get_current_ticks
