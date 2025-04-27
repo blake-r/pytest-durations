@@ -1,6 +1,8 @@
 """Helper module to get original time module functions when a time travelling package is used."""
 from time import monotonic
 
+real_monotonic = monotonic
+
 try:
     # if freezegun is installed, use its stored real function
     from freezegun import api as freezegun_api
