@@ -84,7 +84,7 @@ $ pytest tests
 
 ## Change Log
 
-### 1.5.0 (Apr 27, 2025)
+### 1.5.1 (Apr 27, 2025)
 
 * Add Python 3.13 to supported versions
 * Drop Python 3.8 from supported versions, because of poetry and time_machine dependencies
