@@ -1,12 +1,15 @@
-from contextlib import contextmanager, ExitStack
-from typing import Any, Iterable, Optional, TYPE_CHECKING, Tuple
+"""Plugin main implementation logic."""
+from collections.abc import Iterable
+from contextlib import ExitStack, contextmanager
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional
 
 import pytest
 
 from pytest_durations.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
-from pytest_durations.reporting import get_report_rows, get_report_max_widths
+from pytest_durations.reporting import get_report_max_widths, get_report_rows
 from pytest_durations.ticker import get_current_ticks
 
 if TYPE_CHECKING:
@@ -14,6 +17,7 @@ if TYPE_CHECKING:
     from _pytest.fixtures import FixtureDef, SubRequest
     from _pytest.nodes import Item
     from _pytest.terminal import TerminalReporter
+
     from pytest_durations.types import MeasurementsT
 
 
@@ -27,7 +31,8 @@ class Category:
     TEST_TEARDOWN = "teardown"
 
     @classmethod
-    def report_items(cls) -> Iterable[Tuple[str, str]]:
+    def report_items(cls) -> Iterable[tuple[str, str]]:
+        """Return report section titles."""
         yield cls.FIXTURE_SETUP, "fixture"
         yield cls.TEST_CALL, "test call"
         yield cls.TEST_SETUP, "test setup"
@@ -35,6 +40,8 @@ class Category:
 
 
 class PytestDurationPlugin:
+    """Main plugin implementation to measure test and fixture function durations."""
+
     measurements: "MeasurementsT"
     shared_fixture_duration: float
     last_fixture_teardown_start: float
@@ -108,13 +115,13 @@ class PytestDurationPlugin:
         result_log = config.getoption("--pytest-resultlog")
         with ExitStack() as stack:
             if result_log != DEFAULT_RESULT_LOG:
-                result_log_fp = stack.enter_context(open(result_log, mode="at"))
+                result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
                 terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
             self._report_summary(terminalreporter=terminalreporter, config=config)
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""
-        fullwidth = terminalreporter._tw.fullwidth
+        fullwidth = terminalreporter._tw.fullwidth  # noqa: SLF001
         durations = config.getoption("--pytest-durations")
         durations_min = config.getoption("--pytest-durations-min")
         reports = []

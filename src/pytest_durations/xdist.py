@@ -1,4 +1,5 @@
-from typing import Union, Optional, Any, TYPE_CHECKING
+"""Pytest plugin mixin to be used when xdist package is used."""
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import pytest
 
@@ -6,12 +7,15 @@ if TYPE_CHECKING:
     from _pytest.config import ExitCode
     from _pytest.main import Session
     from xdist.workermanage import WorkerController
+
     from pytest_durations.types import MeasurementsT
 
 _WORKEROUTPUT_KEY = "pytest_durations"
 
 
 class PytestDurationXdistMixin:
+    """Mixin to combine measurements from xdist workers."""
+
     measurements: "MeasurementsT"
 
     @pytest.hookimpl(tryfirst=True)
@@ -35,7 +39,4 @@ class PytestDurationXdistMixin:
         for category, src_series in src.items():
             dst_series = self.measurements[category]
             for key, values in src_series.items():
-                try:
-                    dst_series[key].extend(values)
-                except KeyError:
-                    dst_series[key] = values
+                dst_series.setdefault(key, []).extend(values)

@@ -1,7 +1,8 @@
+"""Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from _pytest.config import PytestPluginManager, Config
+    from _pytest.config import Config, PytestPluginManager
     from _pytest.config.argparsing import Parser
 
 DEFAULT_DURATIONS = 30
@@ -10,6 +11,7 @@ DEFAULT_RESULT_LOG = "-"
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
+    """Add command line arguments parsing."""
     group = parser.getgroup("pytest-durations")
     group.addoption(
         "--pytest-durations",
@@ -35,6 +37,7 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
 
 
 def pytest_configure(config: "Config") -> None:
+    """Configure plugin options using command line arguments."""
     if not config.getoption("--pytest-durations"):
         return
 
@@ -45,6 +48,6 @@ def pytest_configure(config: "Config") -> None:
     if pluginmanager.hasplugin("xdist"):
         from pytest_durations.xdist import PytestDurationXdistMixin
 
-        PytestDurationPlugin = type("PytestDurationPlugin", (PytestDurationPlugin, PytestDurationXdistMixin), {})
+        PytestDurationPlugin = type("PytestDurationPlugin", (PytestDurationPlugin, PytestDurationXdistMixin), {})  # noqa: N806
 
     pluginmanager.register(PytestDurationPlugin())

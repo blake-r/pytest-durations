@@ -1,10 +1,12 @@
+"""Helper to get measurement report information rows."""
+from collections.abc import Collection, Iterable
 from datetime import timedelta
 from operator import itemgetter
 from statistics import median
-from typing import Callable, Collection, Dict, Iterable, List, Tuple, cast
+from typing import Callable, cast
 
-ReportRowT = Tuple[str, str, str, str, str, str]
-TimeValuesT = Tuple[str, int, float, float, float, float]
+ReportRowT = tuple[str, str, str, str, str, str]
+TimeValuesT = tuple[str, int, float, float, float, float]
 
 # columns: 0 - name, 1 - calls, 2 - min, 3 - max, 4 - avg, 5 - sum
 _SUM_COLUMN_IDX = 5  # sum
@@ -14,10 +16,10 @@ _GRAND_TOTAL_STR = "grand total"
 
 
 def get_report_rows(
-    measurements: Dict[str, List[float]],
+    measurements: dict[str, list[float]],
     duration_min: float = -1.0,
     durations: int = 0,
-) -> List[ReportRowT]:
+) -> list[ReportRowT]:
     """Return time measurement result rows."""
     time_values_all = [
         (name, len(times), min(times), max(times), median(times), sum(times)) for name, times in measurements.items()
@@ -32,10 +34,10 @@ def get_report_rows(
         *_get_report_timing_rows(time_values=time_values_verbose),
         _get_report_footer_row(time_values=time_values_all),
     ]
-    return [cast(ReportRowT, tuple(report_row[i] for i in _COLUMNS_ORDER)) for report_row in report_rows]
+    return [cast("ReportRowT", tuple(report_row[i] for i in _COLUMNS_ORDER)) for report_row in report_rows]
 
 
-def get_report_max_widths(report_rows: Collection[ReportRowT]) -> Tuple[int, int, int, int, int, int]:
+def get_report_max_widths(report_rows: Collection[ReportRowT]) -> tuple[int, int, int, int, int, int]:
     """Return report columns max width."""
     return (
         max(len(row[0]) for row in report_rows),
@@ -52,7 +54,7 @@ def _get_report_header_row() -> ReportRowT:
     return "name", "num", "min", "max", "avg", "total"
 
 
-def _get_report_footer_row(time_values: List[TimeValuesT]) -> ReportRowT:
+def _get_report_footer_row(time_values: list[TimeValuesT]) -> ReportRowT:
     """Return grand total report row."""
 
     def _reduce(idx: int, func: Callable[[Iterable[float]], float]) -> float:
@@ -72,7 +74,7 @@ def _get_report_footer_row(time_values: List[TimeValuesT]) -> ReportRowT:
     )
 
 
-def _get_report_timing_rows(time_values: List[TimeValuesT]) -> List[ReportRowT]:
+def _get_report_timing_rows(time_values: list[TimeValuesT]) -> list[ReportRowT]:
     """Return report time measurement rows."""
     return [
         (

@@ -70,11 +70,11 @@ def expected_output_lines():
 
 @pytest.mark.parametrize(
     "options",
-    (
+    [
         (),
         ("--pytest-durations", "1"),
         ("--pytest-durations-min", "0"),
-    ),
+    ],
 )
 def test_plugin_with_options(pytester, sample_testfile, options, expected_output_lines):
     """Plugin should show the same grand total lines for provided options."""

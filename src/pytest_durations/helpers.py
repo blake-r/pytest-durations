@@ -1,3 +1,5 @@
+"""Internal helper functions module."""
+import contextlib
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -13,14 +15,11 @@ def _get_fixture_key(fixturedef: "FixtureDef") -> str:
 def _get_test_key(item: "Item") -> str:
     """Return test item name without filename part (class and function names only)."""
     key = item.nodeid
-    try:
+    with contextlib.suppress(IndexError):
         # remove filename
         key = key.split("::", 1)[1]
-    except IndexError:
-        pass
     # remove parameters
-    key = key.split("[", 1)[0]
-    return key
+    return key.split("[", 1)[0]
 
 
 def _is_shared_fixture(fixturedef: "FixtureDef") -> bool:

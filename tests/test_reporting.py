@@ -1,12 +1,10 @@
-from typing import List, Dict, Tuple
-
 import pytest
 
-from pytest_durations.reporting import get_report_rows, get_report_max_widths
+from pytest_durations.reporting import get_report_max_widths, get_report_rows
 
 
 @pytest.fixture
-def sample_measurements() -> Dict[str, List[float]]:
+def sample_measurements() -> dict[str, list[float]]:
     return {
         "fixture1": [0.1, 0.2, 0.4],
         "fixture2": [1.1, 1.2, 1.4],
@@ -14,7 +12,7 @@ def sample_measurements() -> Dict[str, List[float]]:
 
 
 @pytest.fixture
-def expected_report_rows() -> List[Tuple[str, str, str, str, str, str]]:
+def expected_report_rows() -> list[tuple[str, str, str, str, str, str]]:
     return [
         ("total", "name", "num", "avg", "min", "max"),
         ("0:00:03.700000", "fixture2", "3", "0:00:01.200000", "0:00:01.100000", "0:00:01.400000"),

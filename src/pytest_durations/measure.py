@@ -1,9 +1,8 @@
-from typing import Type, TYPE_CHECKING
+"""Helper class to measure function call durations."""
+from types import TracebackType
+from typing import Optional
 
 from pytest_durations.ticker import get_current_ticks
-
-if TYPE_CHECKING:
-    from types import TracebackType
 
 
 class MeasureDuration:
@@ -19,8 +18,12 @@ class MeasureDuration:
         self.duration = 0.0
         return self
 
-    def __exit__(self, exc_type: Type[Exception], exc_val: Exception, exc_tb: "TracebackType") -> None:
+    def __exit__(
+            self,
+            exc_type: Optional[type[BaseException]],
+            exc_val: Optional[BaseException],
+            exc_tb: Optional[TracebackType],
+    ) -> None:
         """Store block exit time and calculate its duration."""
         self.end = get_current_ticks()
         self.duration += self.end - self.start
-        return None

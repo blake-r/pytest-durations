@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytest-durations"
-version = "1.4.0"
+version = "1.5.0"
 description = "Pytest plugin reporting fixtures and test functions execution time."
 authors = ["Oleg Blednov <oleg.codev@gmail.com>"]
 license = "MIT"
@@ -14,7 +14,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -28,18 +27,16 @@ pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
 pytest = ">=4.6"
-python = ">=3.8.1"
+python = ">=3.9"
 
 [tool.poetry.group.dev.dependencies]
-add-trailing-comma = "^3.1.0"
-autoflake = "^2.3.1"
-black = "^24.8.0"
-flake8 = "^7.1.1"
 freezegun = "^1.5.1"
 pre-commit = "^3.5"
 pytest = "^8.3.3"
 pytest-cov = "^5.0.0"
 pytest-xdist = "^3.6.1"
+ruff = "^0.11.7"
+time-machine = "^2.16.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
