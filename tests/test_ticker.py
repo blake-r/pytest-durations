@@ -50,7 +50,9 @@ def test_freezegun_import_hack(time_hack):
 
 def test_get_current_ticks_frozen(time_hack):
     """Time freezing should not affect tick counter."""
-    ticks = get_current_ticks()
+    first = get_current_ticks()
     with time_hack.context(datetime(1, 1, 1, tzinfo=UTC)):
         frozen_ticks = get_current_ticks()
-    assert frozen_ticks == approx(ticks, 0.1)
+    second = get_current_ticks()
+    assert frozen_ticks == approx(first, 0.1)
+    assert frozen_ticks == approx(second, 0.1)
