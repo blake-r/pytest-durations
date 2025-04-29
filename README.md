@@ -84,6 +84,10 @@ $ pytest tests
 
 ## Change Log
 
+### 1.5.2 (Apr 29, 2025)
+
+* Fix a time-machine time.monotonic() unpatching glitch by using time.time() instead (#19)
+
 ### 1.5.1 (Apr 27, 2025)
 
 * Add Python 3.13 to supported versions
