@@ -1,15 +1,15 @@
 """Helper module to get original time module functions when a time travelling package is used."""
-from time import monotonic
+from time import time
 
-real_monotonic = monotonic
+monotonic_impl = time
 
 try:
     # if freezegun is installed, use its stored real function
-    from freezegun import api as freezegun_api
+    import freezegun
 except ImportError:
     pass
 else:
-    monotonic = real_monotonic = freezegun_api.real_monotonic
+    freezegun.configure(extend_ignore_list=[__name__])
 
 try:
     # if time_machine is installed, use its stored real function
@@ -18,11 +18,11 @@ except ImportError:
     pass
 else:
 
-    def real_monotonic() -> float:
+    def monotonic_impl() -> float:
         """Use escape_hatch if time_machine is currently travelling, original time module otherwise."""
-        return escape_hatch.time.monotonic() if escape_hatch.is_travelling() else monotonic()
+        return escape_hatch.time.time() if escape_hatch.is_travelling() else time()
 
 
 def get_current_ticks() -> float:
     """Return uniformly increasing value in seconds."""
-    return real_monotonic()
+    return monotonic_impl()
