@@ -14,7 +14,7 @@ def sample_measurements() -> dict[str, list[float]]:
 @pytest.fixture
 def expected_report_rows() -> list[tuple[str, str, str, str, str, str]]:
     return [
-        ("total", "name", "num", "avg", "min", "max"),
+        ("total", "name", "num", "med", "min", "max"),
         ("0:00:03.700000", "fixture2", "3", "0:00:01.200000", "0:00:01.100000", "0:00:01.400000"),
         ("0:00:00.700000", "fixture1", "3", "0:00:00.200000", "0:00:00.100000", "0:00:00.400000"),
         ("0:00:04.400000", "grand total", "6", "0:00:00.700000", "0:00:00.100000", "0:00:01.400000"),
@@ -31,7 +31,7 @@ def test_get_report_rows_empty_result():
     """Show header and zeroed footer rows only (empty report)."""
     result = get_report_rows(measurements={})
     assert result == [
-        ("total", "name", "num", "avg", "min", "max"),
+        ("total", "name", "num", "med", "min", "max"),
         ("0:00:00", "grand total", "0", "0:00:00", "0:00:00", "0:00:00"),
     ]
 
