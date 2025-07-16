@@ -8,10 +8,10 @@ from typing import Callable, cast
 ReportRowT = tuple[str, str, str, str, str, str]
 TimeValuesT = tuple[str, int, float, float, float, float]
 
-# columns: 0 - name, 1 - calls, 2 - min, 3 - max, 4 - avg, 5 - sum
+# columns: 0 - name, 1 - calls, 2 - min, 3 - max, 4 - med, 5 - sum
 _SUM_COLUMN_IDX = 5  # sum
 _SORT_COLUMN_IDX = 5  # sum
-_COLUMNS_ORDER = (5, 0, 1, 4, 2, 3)  # sum, name, calls, avg, min, max
+_COLUMNS_ORDER = (5, 0, 1, 4, 2, 3)  # sum, name, calls, med, min, max
 _GRAND_TOTAL_STR = "grand total"
 
 
@@ -51,7 +51,7 @@ def get_report_max_widths(report_rows: Collection[ReportRowT]) -> tuple[int, int
 
 def _get_report_header_row() -> ReportRowT:
     """Return report header row."""
-    return "name", "num", "min", "max", "avg", "total"
+    return "name", "num", "min", "max", "med", "total"
 
 
 def _get_report_footer_row(time_values: list[TimeValuesT]) -> ReportRowT:
@@ -66,7 +66,7 @@ def _get_report_footer_row(time_values: list[TimeValuesT]) -> ReportRowT:
             str(_reduce(1, sum)),  # calls
             str(timedelta(seconds=_reduce(2, min))),  # min time
             str(timedelta(seconds=_reduce(3, max))),  # max time
-            str(timedelta(seconds=_reduce(4, median))),  # avg time
+            str(timedelta(seconds=_reduce(4, median))),  # med time
             str(timedelta(seconds=_reduce(5, sum))),  # sum time
         )
         if time_values
