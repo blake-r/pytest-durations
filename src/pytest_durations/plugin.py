@@ -7,7 +7,14 @@ from typing import TYPE_CHECKING, Any, Optional
 
 import pytest
 
-from pytest_durations.helpers import _get_fixture_key, _get_test_key, _is_shared_fixture
+from pytest_durations.helpers import (
+    get_fixture_grouping_func,
+    get_fixture_key,
+    get_grouped_measurements,
+    get_test_grouping_func,
+    get_test_key,
+    is_shared_fixture,
+)
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
 from pytest_durations.reporting import get_report_max_widths, get_report_rows
@@ -20,7 +27,7 @@ if TYPE_CHECKING:
     from _pytest.nodes import Item
     from _pytest.terminal import TerminalReporter
 
-    from pytest_durations.typing import CategoryMeasurementsT
+    from pytest_durations.typing import CategoryMeasurementsT, FunctionKeyT
 
 
 class PytestDurationPlugin:
@@ -39,19 +46,19 @@ class PytestDurationPlugin:
     @pytest.hookimpl(hookwrapper=True)
     def pytest_fixture_setup(self, fixturedef: "FixtureDef", request: "SubRequest") -> Optional[Any]:
         """Measure fixture setup execution duration."""
-        fixture_key = _get_fixture_key(fixturedef)
+        fixture_key = get_fixture_key(fixturedef=fixturedef, item=request.node)
 
         with self._measure(Category.FIXTURE_SETUP, fixture_key) as measurement:
             yield
 
-        if _is_shared_fixture(fixturedef):
+        if is_shared_fixture(fixturedef):
             # for shared fixtures, store their last setup duration
             self.shared_fixture_duration += measurement.duration
 
     def pytest_fixture_post_finalizer(self, fixturedef: "FixtureDef", request: "SubRequest") -> None:
         """Calculate fixture teardown execution duration."""
         teardown_end = get_current_ticks()
-        if _is_shared_fixture(fixturedef):
+        if is_shared_fixture(fixturedef):
             # for shared scope fixture teardowns, store their last duration
             duration = teardown_end - self.last_fixture_teardown_start
             self.shared_fixture_duration += duration
@@ -61,7 +68,7 @@ class PytestDurationPlugin:
     @pytest.hookimpl(hookwrapper=True)
     def pytest_runtest_call(self, item: "Item") -> None:
         """Measure test execution duration."""
-        with self._measure(Category.TEST_CALL, _get_test_key(item)):
+        with self._measure(Category.TEST_CALL, get_test_key(item)):
             yield
 
     @pytest.hookimpl(hookwrapper=True)
@@ -70,7 +77,7 @@ class PytestDurationPlugin:
 
         Excludes time taken by setting up of shared fixtures.
         """
-        with self._measure(Category.TEST_SETUP, _get_test_key(item)) as measurement:
+        with self._measure(Category.TEST_SETUP, get_test_key(item)) as measurement:
             yield
             # subtract time taken by shared fixture initializations (if any)
             measurement.duration -= self.shared_fixture_duration
@@ -82,7 +89,7 @@ class PytestDurationPlugin:
 
         Excludes time taken by tearing down of shared fixtures.
         """
-        with self._measure(Category.TEST_TEARDOWN, _get_test_key(item)) as measurement:
+        with self._measure(Category.TEST_TEARDOWN, get_test_key(item)) as measurement:
             self.last_fixture_teardown_start = get_current_ticks()
             yield
             # subtract time taken by shared fixture finalizations (if any)
@@ -110,9 +117,17 @@ class PytestDurationPlugin:
         durations_min = config.getoption("--pytest-durations-min")
         reports = []
         widths = [0] * 5
+        group_by = config.getoption("--pytest-durations-group-by")
+        test_grouping_func = get_test_grouping_func(group_by=group_by)
+        fixture_grouping_func = get_fixture_grouping_func(group_by=group_by)
         for category in Category:
-            category_report_rows = get_report_rows(
+            grouping_func = test_grouping_func if category is not Category.FIXTURE_SETUP else fixture_grouping_func
+            category_measurements = get_grouped_measurements(
+                grouping_func=grouping_func,
                 measurements=self.measurements[category],
+            )
+            category_report_rows = get_report_rows(
+                measurements=category_measurements,
                 duration_min=durations_min,
                 durations=durations,
             )
@@ -129,7 +144,7 @@ class PytestDurationPlugin:
                 terminalreporter.line(content)
 
     @contextmanager
-    def _measure(self, category: Category, key: str) -> Iterable["MeasureDuration"]:
+    def _measure(self, category: "Category", key: "FunctionKeyT") -> Iterable["MeasureDuration"]:
         """Measure wrapping block exeution time and put it into a dict."""
         measurements = self.measurements[category]
 

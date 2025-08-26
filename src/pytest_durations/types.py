@@ -26,3 +26,12 @@ class Category(StrEnum):
     TEST_CALL = "test call"
     TEST_SETUP = "test setup"
     TEST_TEARDOWN = "test teardown"
+
+
+class GroupBy(StrEnum):
+    """Possible test grouping enumeration."""
+
+    LEGACY = "legacy"
+    MODULE = "module"
+    CLASS = "class"
+    FUNCTION = "function"

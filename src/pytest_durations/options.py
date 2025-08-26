@@ -1,6 +1,8 @@
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
+from pytest_durations.types import GroupBy
+
 if TYPE_CHECKING:
     from _pytest.config import Config, PytestPluginManager
     from _pytest.config.argparsing import Parser
@@ -18,14 +20,16 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         metavar="N",
         type=int,
         default=DEFAULT_DURATIONS,
-        help=f"Show N slowest setup/test durations (N=0 to disable plugin). Default {DEFAULT_DURATIONS}",
+        help=f"Show N slowest setup/test durations (N=0 to disable plugin)."
+             f" Default {DEFAULT_DURATIONS}",
     )
     group.addoption(
         "--pytest-durations-min",
         metavar="N",
         type=float,
         default=DEFAULT_DURATIONS_MIN,
-        help=f"Minimal duration in seconds for inclusion in slowest list. Default {DEFAULT_DURATIONS_MIN}",
+        help=f"Minimal duration in seconds for inclusion in slowest list."
+             f" Default {DEFAULT_DURATIONS_MIN}",
     )
     group.addoption(
         "--pytest-durations-log",
@@ -33,7 +37,17 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         metavar="FILE",
         type=str,
         default=DEFAULT_RESULT_LOG,
-        help=f'Result log filename or dash for terminal output. Default "{DEFAULT_RESULT_LOG}"',
+        help=f'Result log filename or dash for terminal output.'
+             f' Default "{DEFAULT_RESULT_LOG}"',
+    )
+    group.addoption(
+        "--pytest-durations-group-by",
+        type=GroupBy,
+        default=GroupBy.FUNCTION,
+        choices=[*GroupBy],
+        help=f'Group test durations by module, class, or function.'
+             f' Use legacy grouping for backward compatibility.'
+             f' Default: "{GroupBy.FUNCTION}"',
     )
 
 

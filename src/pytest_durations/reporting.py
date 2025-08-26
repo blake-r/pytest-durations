@@ -9,9 +9,10 @@ ReportRowT = tuple[str, str, str, str, str, str]
 TimeValuesT = tuple[str, int, float, float, float, float]
 
 # columns: 0 - name, 1 - calls, 2 - min, 3 - max, 4 - med, 5 - sum
+_CALLS_COLUMN_IDX = 1  # calls
 _SUM_COLUMN_IDX = 5  # sum
 _SORT_COLUMN_IDX = 5  # sum
-_COLUMNS_ORDER = (5, 0, 1, 4, 2, 3)  # sum, name, calls, med, min, max
+_COLUMNS_ORDER = (_SUM_COLUMN_IDX, 0, _CALLS_COLUMN_IDX, 4, 2, 3)  # sum, name, calls, med, min, max
 _GRAND_TOTAL_STR = "grand total"
 
 
@@ -63,7 +64,7 @@ def _get_report_footer_row(time_values: list[TimeValuesT]) -> ReportRowT:
     return (
         (
             _GRAND_TOTAL_STR,
-            str(_reduce(1, sum)),  # calls
+            str(_reduce(_CALLS_COLUMN_IDX, sum)),  # calls
             str(timedelta(seconds=_reduce(2, min))),  # min time
             str(timedelta(seconds=_reduce(3, max))),  # max time
             str(timedelta(seconds=_reduce(4, median))),  # med time

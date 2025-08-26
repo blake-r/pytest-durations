@@ -26,8 +26,12 @@ pytest-durations:
                         Minimal duration in seconds for inclusion in slowest
                         list. Default 0.005
   --pytest-durations-log=FILE
-                        Result log filename or dash for terminal output.
-                        Default "-"
+                        Result log filename or dash for terminal output. Default
+                        "-"
+  --pytest-durations-group-by={legacy,module,class,function}
+                        Group test durations by module, class, or function. Use
+                        legacy grouping for backward compatibility. Default:
+                        "function"
 ```
 
 Note: please don't be mistaken by `--durations` options which comes from pytest itself.
