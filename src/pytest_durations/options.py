@@ -28,7 +28,8 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         help=f"Minimal duration in seconds for inclusion in slowest list. Default {DEFAULT_DURATIONS_MIN}",
     )
     group.addoption(
-        "--pytest-resultlog",
+        "--pytest-durations-log",
+        "--pytest-resultlog",  # deprecated
         metavar="FILE",
         type=str,
         default=DEFAULT_RESULT_LOG,

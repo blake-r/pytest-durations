@@ -112,7 +112,7 @@ class PytestDurationPlugin:
         config: "Config",
     ) -> None:
         """Write the measured time to a terminal reporter or to a file."""
-        result_log = config.getoption("--pytest-resultlog")
+        result_log = config.getoption("--pytest-durations-log")
         with ExitStack() as stack:
             if result_log != DEFAULT_RESULT_LOG:
                 result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
