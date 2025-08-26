@@ -25,7 +25,7 @@ pytest-durations:
   --pytest-durations-min=N
                         Minimal duration in seconds for inclusion in slowest
                         list. Default 0.005
-  --pytest-resultlog=FILE
+  --pytest-durations-log=FILE
                         Result log filename or dash for terminal output.
                         Default "-"
 ```

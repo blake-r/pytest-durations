@@ -86,7 +86,7 @@ def test_plugin_with_options(pytester, sample_testfile, options, expected_output
 def test_plugin_with_resultlog(pytester, sample_testfile, sample_result_log, expected_output_lines):
     """Plugin should append summary to a file if the result log option is provided."""
     expected_output_lines = [SAMPLE_RESULT_LOG_FIRST_LINE, *expected_output_lines]
-    result = pytester.runpytest(*("--pytest-resultlog", SAMPLE_RESULT_LOG_NAME))
+    result = pytester.runpytest(*("--pytest-durations-log", SAMPLE_RESULT_LOG_NAME))
     result.assert_outcomes(passed=2)
     with sample_result_log.open("rt") as fp:
         lines = LineMatcher(fp.readlines())
