@@ -4,11 +4,11 @@
 
 Pytest plugin to measure fixture and test durations.
 
-In order to get the pure test setup/teardown durations, plugin subtracts time taken by fixtures which scope
+In order to get the pure test setup/teardown durations, the plugin subtracts time taken by fixtures whose scope
 is larger than "function".
 
-In comparison to the builtin pytest "--durations", the plugin shows fixture durations separately from test function
-durations and supports xdist and time travelling packages.
+In comparison to the built-in pytest "--durations", this plugin shows fixture durations separately from test function
+durations and supports xdist and time-traveling packages.
 
 ## Installation
 
@@ -34,56 +34,53 @@ pytest-durations:
                         "function"
 ```
 
-Note: please don't be mistaken by `--durations` options which comes from pytest itself.
+Note: Please don't confuse these options with the --durations options that come from pytest itself.
 
 ## Example of report
 
 ```text
-============================== fixture duration top ==============================
-total          name                              num avg            min
-0:00:00.115563                fake_pluginmanager   3 0:00:00.034653 0:00:00.033694
-0:00:00.060115                       fake_config   2 0:00:00.030057 0:00:00.029842
-0:00:00.048612                      fake_session   2 0:00:00.024306 0:00:00.023556
-0:00:00.016073                         fake_node   2 0:00:00.008037 0:00:00.008029
-0:00:00.012089                          pytester   6 0:00:00.001444 0:00:00.001330
-0:00:00.008237                       fake_parser   1 0:00:00.008237 0:00:00.008237
-0:00:00.265457                       grand total  78 0:00:00.000031 0:00:00.000018
-============================= test call duration top =============================
-total          name                              num avg            min
-0:00:00.755826         test_plugin_xdist_enabled   1 0:00:00.755826 0:00:00.755826
-0:00:00.246548          test_plugin_with_options   3 0:00:00.081849 0:00:00.081029
-0:00:00.158057                 test_get_test_key   9 0:00:00.017376 0:00:00.016729
-0:00:00.121555               test_plugin_disable   1 0:00:00.121555 0:00:00.121555
-0:00:00.078009        test_plugin_xdist_disabled   1 0:00:00.078009 0:00:00.078009
-0:00:00.037713     test_get_current_ticks_frozen   1 0:00:00.037713 0:00:00.037713
-0:00:01.405064                       grand total  31 0:00:00.000708 0:00:00.000162
-============================= test setup duration top ============================
-total          name                              num avg            min
-0:00:00.065316    test_pytest_configure_disabled   1 0:00:00.065316 0:00:00.065316
-0:00:00.063908             test_pytest_configure   1 0:00:00.063908 0:00:00.063908
-0:00:00.055924             test_pytest_addoption   1 0:00:00.055924 0:00:00.055924
-0:00:00.025543 test_pytest_sessionfinish_noxdist   1 0:00:00.025543 0:00:00.025543
-0:00:00.024043         test_pytest_sessionfinish   1 0:00:00.024043 0:00:00.024043
-0:00:00.011220          test_plugin_with_options   3 0:00:00.002642 0:00:00.002580
-0:00:00.008443  test_pytest_testnodedown_noxdist   1 0:00:00.008443 0:00:00.008443
-0:00:00.008431          test_pytest_testnodedown   1 0:00:00.008431 0:00:00.008431
-0:00:00.274801                       grand total  31 0:00:00.002182 0:00:00.000149
-=========================== test teardown duration top ===========================
-total          name                              num avg            min
-0:00:00.007093                       grand total  31 0:00:00.000178 0:00:00.000126
-=============================== 31 passed in 1.77s ===============================
+========================================= fixture duration top ==========================================
+total          name                                                     num med            min
+0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008076
+0:00:00.015807 tests/test_xdist.py::fake_session                          2 0:00:00.007904 0:00:00.007442
+0:00:00.014311 tests/test_options.py::fake_config                         2 0:00:00.007155 0:00:00.007126
+0:00:00.009118 tests/test_plugin.py::test_plugin_with_options::pytester   3 0:00:00.002232 0:00:00.002049
+0:00:00.005009 tests/test_options.py::reload_module                       1 0:00:00.005009 0:00:00.005009
+0:00:00.096780 grand total                                              164 0:00:00.000016 0:00:00.000010
+======================================== test call duration top =========================================
+total          name                                                     num med            min
+0:00:00.483961 tests/test_plugin.py::test_plugin_xdist_enabled            1 0:00:00.483961 0:00:00.483961
+0:00:00.177326 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.057389 0:00:00.057286
+0:00:00.067949 tests/test_plugin.py::test_plugin_with_resultlog           1 0:00:00.067949 0:00:00.067949
+0:00:00.066597 tests/test_plugin.py::test_plugin_disable                  1 0:00:00.066597 0:00:00.066597
+0:00:00.059509 tests/test_plugin.py::test_plugin_xdist_disabled           1 0:00:00.059509 0:00:00.059509
+0:00:00.025053 tests/test_ticker.py::test_freezegun_import_none           1 0:00:00.025053 0:00:00.025053
+0:00:00.023706 tests/test_ticker.py::test_get_current_ticks_frozen        2 0:00:00.011853 0:00:00.000215
+0:00:00.912538 grand total                                               78 0:00:00.000083 0:00:00.000050
+======================================== test setup duration top ========================================
+total          name                                                     num med            min
+0:00:00.019535 tests/test_options.py::test_pytest_addoption               1 0:00:00.019535 0:00:00.019535
+0:00:00.016147 tests/test_options.py::test_pytest_configure_disabled      1 0:00:00.016147 0:00:00.016147
+0:00:00.015358 tests/test_options.py::test_pytest_configure               1 0:00:00.015358 0:00:00.015358
+0:00:00.010575 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.002773 0:00:00.002462
+0:00:00.008763 tests/test_xdist.py::test_pytest_sessionfinish_noxdist     1 0:00:00.008763 0:00:00.008763
+0:00:00.007749 tests/test_xdist.py::test_pytest_sessionfinish             1 0:00:00.007749 0:00:00.007749
+0:00:00.100089 grand total                                               78 0:00:00.000113 0:00:00.000052
+====================================== test teardown duration top =======================================
+total          name                                                     num med            min
+0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000044
 ```
 
 ## Development
 
-Project uses [poetry](https://python-poetry.org/) for dependencies management, [pytest](https://pytest.org/)
-for testing and [pre-commit](https://pre-commit.com/) for coding standard checks.
+The project uses [poetry](https://python-poetry.org/) for dependency management, [pytest](https://pytest.org/) for
+testing, and [pre-commit](https://pre-commit.com/) for coding standard checks.
 
 ```shell
 $ pip install poetry
 $ poetry install
 $ pre-commit install
-$ pytest tests
+$ pytest
 ```
 
 ## Change Log
