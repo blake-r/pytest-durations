@@ -57,14 +57,14 @@ def sample_result_log():
 @pytest.fixture
 def expected_output_lines():
     return [
-        "*fixture duration top*",
-        "*grand total   7*",
-        "*test call duration top*",
-        "*grand total   2*",
-        "*test setup duration top*",
-        "*grand total   2*",
-        "*test teardown duration top*",
-        "*grand total   2*",
+        "* fixture duration top *",
+        "* grand total * 7 *",
+        "* test call duration top *",
+        "* grand total * 2 *",
+        "* test setup duration top *",
+        "* grand total * 2 *",
+        "* test teardown duration top *",
+        "* grand total * 2 *",
     ]
 
 
