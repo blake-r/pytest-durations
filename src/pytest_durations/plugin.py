@@ -1,6 +1,7 @@
 """Plugin main implementation logic."""
 from collections.abc import Iterable
 from contextlib import ExitStack, contextmanager
+from itertools import count
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -121,7 +122,10 @@ class PytestDurationPlugin:
         for section_name, category_report_rows in reports:
             terminalreporter.write_sep(sep="=", title=section_name, fullwidth=fullwidth)
             for idx, row in enumerate(category_report_rows):
-                content = " ".join(f"{col: {'>' if idx else '<'}{width}}" for col, width in zip(row, widths))
+                content = " ".join(
+                    f"{col:{'>' if idx and c else '<'}{width}}"  # align columns right except test name column
+                    for col, width, c in zip(row, widths, count(-1))
+                )
                 terminalreporter.line(content)
 
     @contextmanager
