@@ -11,6 +11,7 @@ from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
 from pytest_durations.reporting import get_report_max_widths, get_report_rows
 from pytest_durations.ticker import get_current_ticks
+from pytest_durations.types import Category
 
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
@@ -18,37 +19,19 @@ if TYPE_CHECKING:
     from _pytest.nodes import Item
     from _pytest.terminal import TerminalReporter
 
-    from pytest_durations.types import MeasurementsT
-
-
-class Category:
-    """Measurement category constants."""
-
-    __slots__ = ()
-    FIXTURE_SETUP = "fixture"
-    TEST_CALL = "test"
-    TEST_SETUP = "setup"
-    TEST_TEARDOWN = "teardown"
-
-    @classmethod
-    def report_items(cls) -> Iterable[tuple[str, str]]:
-        """Return report section titles."""
-        yield cls.FIXTURE_SETUP, "fixture"
-        yield cls.TEST_CALL, "test call"
-        yield cls.TEST_SETUP, "test setup"
-        yield cls.TEST_TEARDOWN, "test teardown"
+    from pytest_durations.typing import CategoryMeasurementsT
 
 
 class PytestDurationPlugin:
     """Main plugin implementation to measure test and fixture function durations."""
 
-    measurements: "MeasurementsT"
+    measurements: "CategoryMeasurementsT"
     shared_fixture_duration: float
     last_fixture_teardown_start: float
 
     def __init__(self):
         super().__init__()
-        self.measurements = {category: {} for category, _ in Category.report_items()}
+        self.measurements = {category: {} for category in Category}
         self.shared_fixture_duration = 0.0
         self.last_fixture_teardown_start = 0.0
 
@@ -126,13 +109,13 @@ class PytestDurationPlugin:
         durations_min = config.getoption("--pytest-durations-min")
         reports = []
         widths = [0] * 5
-        for category, name in Category.report_items():
+        for category in Category:
             category_report_rows = get_report_rows(
                 measurements=self.measurements[category],
                 duration_min=durations_min,
                 durations=durations,
             )
-            reports.append((f"{name} duration top", category_report_rows))
+            reports.append((f"{category} duration top", category_report_rows))
             widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows))]
         fullwidth = max(fullwidth, sum(widths) + len(widths) - 1)
         for section_name, category_report_rows in reports:
@@ -142,7 +125,7 @@ class PytestDurationPlugin:
                 terminalreporter.line(content)
 
     @contextmanager
-    def _measure(self, category: str, key: str) -> Iterable["MeasureDuration"]:
+    def _measure(self, category: Category, key: str) -> Iterable["MeasureDuration"]:
         """Measure wrapping block exeution time and put it into a dict."""
         measurements = self.measurements[category]
 
