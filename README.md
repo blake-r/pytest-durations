@@ -85,6 +85,19 @@ $ pytest
 
 ## Change Log
 
+### 1.6.0 (Aug 27, 2025)
+
+* Added support for grouping test durations by module, class, or function (#26)
+* Improved column alignment in duration reports, ensuring test names are left-aligned
+* Renamed the avg column to med in reports, as it correctly represents median durations, not average durations (#24)
+* Refactoring
+  * Added a Python script (check_versions.py) to automate checking that the package version is synchronized
+  * Renamed the pytest-resultlog option to pytest-durations-log for consistency.
+    The pytest-resultlog option will be deprecated in a future release
+  * Converted the internal Category class to inherit from StrEnum for improved type safety and better serialization
+
+To revert to the old behavior for test and fixture names in reports, set the `--pytest-durations-group-by` option to "legacy".
+
 ### 1.5.2 (Apr 29, 2025)
 
 * Fix a time-machine time.monotonic() unpatching glitch by using time.time() instead (#19)
