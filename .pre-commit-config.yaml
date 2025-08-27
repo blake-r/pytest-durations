@@ -10,3 +10,9 @@ repos:
           - --exit-non-zero-on-fix
         types: [ python ]
         language: system
+
+      - id: check-version
+        name: check-version
+        entry: .github/scripts/check_version.py
+        files: 'pyproject\.toml|src\/pytest_durations\/__init__\.py|README\.md$'
+        language: python
