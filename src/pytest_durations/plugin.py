@@ -39,7 +39,7 @@ class PytestDurationPlugin:
     @pytest.hookimpl(hookwrapper=True)
     def pytest_fixture_setup(self, fixturedef: "FixtureDef", request: "SubRequest") -> Optional[Any]:
         """Measure fixture setup execution duration."""
-        fixture_key = _get_fixture_key(fixturedef)
+        fixture_key = _get_fixture_key(fixturedef, request)
 
         with self._measure(Category.FIXTURE_SETUP, fixture_key) as measurement:
             yield
