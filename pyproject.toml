@@ -39,9 +39,10 @@ pytest-xdist = "^3.6.1"
 ruff = "^0.11.7"
 time-machine = "^2.16.0"
 
-[tool.poetry.group.self.dependencies]
-poetry = "^2.1.2"
-setuptools = "^79.0.1"
+[tool.poetry.group.sync.dependencies]
+poetry = "*"
+setuptools = "*"
+wheel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

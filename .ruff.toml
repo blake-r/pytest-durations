@@ -9,7 +9,7 @@ ignore = ["ANN204", "ANN401", "ARG001", "ARG002", "D107", "FA100"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["E402"]
-"tests/**/*.py" = ["ANN", "ARG001", "D", "PLR2004", "S101"]
+"tests/**/*.py" = ["ANN", "ARG001", "D", "PLR2004", "S101", "SLF001"]
 
 [lint.pydocstyle]
 convention = "pep257"
