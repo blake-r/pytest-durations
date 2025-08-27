@@ -5,6 +5,10 @@ from enum import Enum
 class StrEnum(str, Enum):
     """Enum for string values that proxies their behavior."""
 
+    def __str__(self) -> str:
+        """Return the current value (expected to be a string)."""
+        return self.value
+
     def save(self) -> str:
         """Serialize StrEnum to a plain string."""
         return self.name
