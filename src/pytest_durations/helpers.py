@@ -60,12 +60,12 @@ def get_grouped_measurements(
 
 def _test_group_by_legacy(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep class and test name only (old behaviour before grouping)
-    return item[0].split("::", 1)[-1]
+    return _remove_params_from_key(item[0].split("::", 1)[-1])
 
 
 def _fixture_group_by_legacy(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep fixture name only (old behaviour before grouping)
-    return item[0].rsplit("::", 1)[-1]
+    return _remove_params_from_key(item[0].rsplit("::", 1)[-1])
 
 
 def _group_by_module(item: "MeasurementItemT") -> "FunctionKeyT":
@@ -86,7 +86,7 @@ def _group_by_class(item: "MeasurementItemT") -> "FunctionKeyT":
 
 def _group_by_function(item: "MeasurementItemT") -> "FunctionKeyT":
     # remove parameters mark
-    return item[0].split("[", 1)[0]
+    return _remove_params_from_key(item[0])
 
 
 def _group_by_none(item: "MeasurementItemT") -> "FunctionKeyT":
@@ -110,3 +110,7 @@ _GROUPING_FUNC_MAP: Mapping["GroupingKindT", Mapping["GroupBy", "GroupingCbT"]] 
         GroupBy.NONE: _group_by_none,
     },
 }
+
+
+def _remove_params_from_key(key: str) -> str:
+    return key.rsplit("[", 1)[0]

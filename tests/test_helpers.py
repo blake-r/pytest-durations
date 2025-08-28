@@ -130,53 +130,70 @@ class TestTestGroupBy:
         def assertion(group_by: "GroupBy") -> bool:
             (sample, expected), grouping_func = rule, _GROUPING_FUNC_MAP["test"][group_by]
             result = grouping_func((sample, [1.0]))
-            return result == expected
+            assert result == expected
+            return True
 
         return assertion
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function[param]", "scope::function"),
             ("module.py::scope::function", "scope::function"),
             ("module.py::function", "function"),
             ("function", "function"),
         ],
     )
     def test_group_by_legacy(self, assertion, rule):
-        assert assertion(group_by=GroupBy.LEGACY) is True
+        assertion(group_by=GroupBy.LEGACY)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function[param]", "module.py"),
             ("module.py::scope::function", "module.py"),
             ("module.py::function", "module.py"),
             ("function", "uncertain"),
         ],
     )
     def test_group_by_module(self, assertion, rule):
-        assert assertion(group_by=GroupBy.MODULE) is True
+        assertion(group_by=GroupBy.MODULE)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function[param]", "module.py::scope"),
             ("module.py::scope::function", "module.py::scope"),
             ("module.py::function", "module.py::"),
             ("function", "uncertain::function"),
         ],
     )
     def test_group_by_class(self, assertion, rule):
-        assert assertion(group_by=GroupBy.CLASS) is True
+        assertion(group_by=GroupBy.CLASS)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function[param]", "module.py::scope::function"),
             ("module.py::scope::function", "module.py::scope::function"),
             ("module.py::function", "module.py::function"),
             ("function", "function"),
         ],
     )
     def test_group_by_function(self, assertion, rule):
-        assert assertion(group_by=GroupBy.FUNCTION) is True
+        assertion(group_by=GroupBy.FUNCTION)
+
+    @pytest.mark.parametrize(
+        "rule",
+        [
+            ("module.py::scope::function[param]", "module.py::scope::function[param]"),
+            ("module.py::scope::function", "module.py::scope::function"),
+            ("module.py::function", "module.py::function"),
+            ("function", "function"),
+        ],
+    )
+    def test_group_by_none(self, assertion, rule):
+        assertion(group_by=GroupBy.NONE)
 
 
 class TestFixtureGroupBy:
@@ -192,6 +209,7 @@ class TestFixtureGroupBy:
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function::fixture[param]", "fixture"),
             ("module.py::scope::function::fixture", "fixture"),
             ("module.py::scope::fixture", "fixture"),
             ("module.py::function::fixture", "fixture"),
@@ -200,11 +218,12 @@ class TestFixtureGroupBy:
         ],
     )
     def test_group_by_legacy(self, assertion, rule):
-        assert assertion(group_by=GroupBy.LEGACY) is True
+        assertion(group_by=GroupBy.LEGACY)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function::fixture[param]", "module.py"),
             ("module.py::scope::function::fixture", "module.py"),
             ("module.py::scope::fixture", "module.py"),
             ("module.py::function::fixture", "module.py"),
@@ -213,11 +232,12 @@ class TestFixtureGroupBy:
         ],
     )
     def test_group_by_module(self, assertion, rule):
-        assert assertion(group_by=GroupBy.MODULE) is True
+        assertion(group_by=GroupBy.MODULE)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function::fixture[param]", "module.py::scope::function"),
             ("module.py::scope::function::fixture", "module.py::scope::function"),
             ("module.py::scope::fixture", "module.py::scope"),
             ("module.py::function::fixture", "module.py::function"),
@@ -226,11 +246,12 @@ class TestFixtureGroupBy:
         ],
     )
     def test_group_by_class(self, assertion, rule):
-        assert assertion(group_by=GroupBy.CLASS) is True
+        assertion(group_by=GroupBy.CLASS)
 
     @pytest.mark.parametrize(
         "rule",
         [
+            ("module.py::scope::function::fixture[param]", "module.py::scope::function::fixture"),
             ("module.py::scope::function::fixture", "module.py::scope::function::fixture"),
             ("module.py::scope::fixture", "module.py::scope::fixture"),
             ("module.py::function::fixture", "module.py::function::fixture"),
@@ -239,4 +260,17 @@ class TestFixtureGroupBy:
         ],
     )
     def test_group_by_function(self, assertion, rule):
-        assert assertion(group_by=GroupBy.FUNCTION) is True
+        assertion(group_by=GroupBy.FUNCTION)
+
+    @pytest.mark.parametrize(
+        "rule",
+        [
+            ("module.py::scope::function::fixture[param]", "module.py::scope::function::fixture[param]"),
+            ("module.py::scope::fixture", "module.py::scope::fixture"),
+            ("module.py::function::fixture", "module.py::function::fixture"),
+            ("module.py::fixture", "module.py::fixture"),
+            ("fixture", "fixture"),
+        ],
+    )
+    def test_group_by_none(self, assertion, rule):
+        assertion(group_by=GroupBy.NONE)
