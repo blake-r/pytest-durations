@@ -58,7 +58,7 @@ class TestGetFixtureKey:
         [
             (module_level.__name__, "tests/test_helpers.py::module_level"),
             (class_level.__name__, "tests/test_helpers.py::TestGetFixtureKey::class_level"),
-            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key::rule"),
+            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule2]::rule"),
         ],
     )
     @pytest.mark.usefixtures("module_level", "class_level")
@@ -77,7 +77,7 @@ class TestGetTestKey:
     @pytest.mark.parametrize("param", [None])
     def test_get_test_key_parametrized(self, request: "FixtureRequest", param):
         result = get_test_key(item=request.node)
-        assert result == "tests/test_helpers.py::TestGetTestKey::test_get_test_key_parametrized"
+        assert result == "tests/test_helpers.py::TestGetTestKey::test_get_test_key_parametrized[None]"
 
 
 class TestGetGroupingFunc:

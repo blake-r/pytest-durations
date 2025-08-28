@@ -32,7 +32,7 @@ def get_fixture_key(fixturedef: "FixtureDef", item: "Item") -> "FunctionKeyT":
 
 def get_test_key(item: "Item") -> "FunctionKeyT":
     """Return test item measurements dict key."""
-    return item.nodeid.split("[", 1)[0]
+    return item.nodeid
 
 
 def _get_grouping_func(kind: "GroupingKindT", group_by: "GroupBy") -> "GroupingCbT":
@@ -85,6 +85,11 @@ def _group_by_class(item: "MeasurementItemT") -> "FunctionKeyT":
 
 
 def _group_by_function(item: "MeasurementItemT") -> "FunctionKeyT":
+    # remove parameters mark
+    return item[0].split("[", 1)[0]
+
+
+def _group_by_none(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep name as is
     return item[0]
 
@@ -95,11 +100,13 @@ _GROUPING_FUNC_MAP: Mapping["GroupingKindT", Mapping["GroupBy", "GroupingCbT"]] 
         GroupBy.MODULE: _group_by_module,
         GroupBy.CLASS: _group_by_class,
         GroupBy.FUNCTION: _group_by_function,
+        GroupBy.NONE: _group_by_none,
     },
     "fixture": {
         GroupBy.LEGACY: _fixture_group_by_legacy,
         GroupBy.MODULE: _group_by_module,
         GroupBy.CLASS: _group_by_class,
         GroupBy.FUNCTION: _group_by_function,
+        GroupBy.NONE: _group_by_none,
     },
 }

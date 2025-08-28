@@ -35,3 +35,4 @@ class GroupBy(StrEnum):
     MODULE = "module"
     CLASS = "class"
     FUNCTION = "function"
+    NONE = "none"
