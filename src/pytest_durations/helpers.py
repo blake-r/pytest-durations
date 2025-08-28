@@ -26,7 +26,7 @@ def is_shared_fixture(fixturedef: "FixtureDef") -> bool:
 
 def get_fixture_key(fixturedef: "FixtureDef", item: "Item") -> "FunctionKeyT":
     """Return fixture measurements dict key."""
-    baseid = fixturedef.baseid if fixturedef.baseid else get_test_key(item=item)
+    baseid = fixturedef.baseid if fixturedef.baseid or not fixturedef.has_location else get_test_key(item=item)
     return "::".join(filter(None, (baseid, fixturedef.argname)))
 
 

@@ -59,10 +59,11 @@ class TestGetFixtureKey:
             (module_level.__name__, "tests/test_helpers.py::module_level"),
             (class_level.__name__, "tests/test_helpers.py::TestGetFixtureKey::class_level"),
             ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule2]::rule"),
+            ("tmp_path_factory", "tmp_path_factory"),
         ],
     )
     @pytest.mark.usefixtures("module_level", "class_level")
-    def test_get_fixture_key(self, request: "FixtureRequest",  rule):
+    def test_get_fixture_key(self, request: "FixtureRequest", tmp_path_factory, rule):
         fixture, expected = rule
         fixturedef = request._fixture_defs[fixture]
         result = get_fixture_key(fixturedef=fixturedef, item=request.node)
@@ -223,7 +224,7 @@ class TestFixtureGroupBy:
     @pytest.mark.parametrize(
         "rule",
         [
-            ("module.py::scope::function::fixture[param]", "module.py"),
+            ("module.py::scope::function[param]::fixture", "module.py"),
             ("module.py::scope::function::fixture", "module.py"),
             ("module.py::scope::fixture", "module.py"),
             ("module.py::function::fixture", "module.py"),
@@ -237,7 +238,7 @@ class TestFixtureGroupBy:
     @pytest.mark.parametrize(
         "rule",
         [
-            ("module.py::scope::function::fixture[param]", "module.py::scope::function"),
+            ("module.py::scope::function[param]::fixture", "module.py::scope::function[param]"),
             ("module.py::scope::function::fixture", "module.py::scope::function"),
             ("module.py::scope::fixture", "module.py::scope"),
             ("module.py::function::fixture", "module.py::function"),
@@ -251,7 +252,7 @@ class TestFixtureGroupBy:
     @pytest.mark.parametrize(
         "rule",
         [
-            ("module.py::scope::function::fixture[param]", "module.py::scope::function::fixture"),
+            ("module.py::scope::function[param]::fixture", "module.py::scope::function[param]::fixture"),
             ("module.py::scope::function::fixture", "module.py::scope::function::fixture"),
             ("module.py::scope::fixture", "module.py::scope::fixture"),
             ("module.py::function::fixture", "module.py::function::fixture"),
@@ -265,7 +266,7 @@ class TestFixtureGroupBy:
     @pytest.mark.parametrize(
         "rule",
         [
-            ("module.py::scope::function::fixture[param]", "module.py::scope::function::fixture[param]"),
+            ("module.py::scope::function[param]::fixture", "module.py::scope::function[param]::fixture"),
             ("module.py::scope::fixture", "module.py::scope::fixture"),
             ("module.py::function::fixture", "module.py::function::fixture"),
             ("module.py::fixture", "module.py::fixture"),
