@@ -3,8 +3,6 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 import pytest
 
-from pytest_durations.types import Category
-
 if TYPE_CHECKING:
     from _pytest.config import ExitCode
     from _pytest.main import Session
@@ -41,15 +39,12 @@ class PytestDurationXdistMixin:
 
 def dump_measurements(measurements: "CategoryMeasurementsT") -> dict[str, "FunctionMeasurementsT"]:
     """Serialize category measurement mapping with simple types only."""
-    return {
-        category.save(): measurements
-        for category, measurements in measurements.items()
-    }
+    return measurements
 
 
 def load_measurements(measurements: dict[str, "FunctionMeasurementsT"], destination: "CategoryMeasurementsT") -> None:
     """Deserialize category measurement mapping into an existing object."""
     for category, src_series in measurements.items():
-        dst_series = destination[Category.load(category)]
+        dst_series = destination[category]
         for key, values in src_series.items():
             dst_series.setdefault(key, []).extend(values)
