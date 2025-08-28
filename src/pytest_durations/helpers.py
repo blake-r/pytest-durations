@@ -26,13 +26,13 @@ def is_shared_fixture(fixturedef: "FixtureDef") -> bool:
 
 def get_fixture_key(fixturedef: "FixtureDef", item: "Item") -> "FunctionKeyT":
     """Return fixture measurements dict key."""
-    baseid = fixturedef.baseid if fixturedef.baseid else get_test_key(item=item)
+    baseid = fixturedef.baseid if fixturedef.baseid or not fixturedef.has_location else get_test_key(item=item)
     return "::".join(filter(None, (baseid, fixturedef.argname)))
 
 
 def get_test_key(item: "Item") -> "FunctionKeyT":
     """Return test item measurements dict key."""
-    return item.nodeid.split("[", 1)[0]
+    return item.nodeid
 
 
 def _get_grouping_func(kind: "GroupingKindT", group_by: "GroupBy") -> "GroupingCbT":
@@ -60,12 +60,12 @@ def get_grouped_measurements(
 
 def _test_group_by_legacy(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep class and test name only (old behaviour before grouping)
-    return item[0].split("::", 1)[-1]
+    return _remove_params_from_key(item[0].split("::", 1)[-1])
 
 
 def _fixture_group_by_legacy(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep fixture name only (old behaviour before grouping)
-    return item[0].rsplit("::", 1)[-1]
+    return _remove_params_from_key(item[0].rsplit("::", 1)[-1])
 
 
 def _group_by_module(item: "MeasurementItemT") -> "FunctionKeyT":
@@ -85,6 +85,11 @@ def _group_by_class(item: "MeasurementItemT") -> "FunctionKeyT":
 
 
 def _group_by_function(item: "MeasurementItemT") -> "FunctionKeyT":
+    # remove parameters mark
+    return _remove_params_from_key(item[0])
+
+
+def _group_by_none(item: "MeasurementItemT") -> "FunctionKeyT":
     # keep name as is
     return item[0]
 
@@ -95,11 +100,17 @@ _GROUPING_FUNC_MAP: Mapping["GroupingKindT", Mapping["GroupBy", "GroupingCbT"]] 
         GroupBy.MODULE: _group_by_module,
         GroupBy.CLASS: _group_by_class,
         GroupBy.FUNCTION: _group_by_function,
+        GroupBy.NONE: _group_by_none,
     },
     "fixture": {
         GroupBy.LEGACY: _fixture_group_by_legacy,
         GroupBy.MODULE: _group_by_module,
         GroupBy.CLASS: _group_by_class,
         GroupBy.FUNCTION: _group_by_function,
+        GroupBy.NONE: _group_by_none,
     },
 }
+
+
+def _remove_params_from_key(key: str) -> str:
+    return key.rsplit("[", 1)[0]

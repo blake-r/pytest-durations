@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 DEFAULT_DURATIONS = 30
 DEFAULT_DURATIONS_MIN = 0.005
 DEFAULT_RESULT_LOG = "-"
+DEFAULT_GROUP_BY = GroupBy.FUNCTION
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
@@ -43,11 +44,11 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
     group.addoption(
         "--pytest-durations-group-by",
         type=GroupBy,
-        default=GroupBy.FUNCTION,
+        default=DEFAULT_GROUP_BY,
         choices=[*GroupBy],
         help=f'Group test durations by module, class, or function.'
              f' Use legacy grouping for backward compatibility.'
-             f' Default: "{GroupBy.FUNCTION}"',
+             f' Default: "{DEFAULT_GROUP_BY}"',
     )
 
 
