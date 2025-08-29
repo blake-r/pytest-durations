@@ -85,6 +85,11 @@ $ pytest
 
 ## Change Log
 
+### 1.6.1 (Aug 29, 2025)
+
+* Introduced a new `--pytest-durations-group-by=none` option that preserves the full test node ID, including parameters
+* Removed the need for explicit serialization of Category values when sending CategoryMeasurementsT dictionaries
+
 ### 1.6.0 (Aug 27, 2025)
 
 * Added support for grouping test durations by module, class, or function (#26)
