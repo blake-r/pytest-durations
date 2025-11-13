@@ -129,7 +129,7 @@ class PytestDurationPlugin:
             category_report_rows = get_report_rows(
                 measurements=category_measurements,
                 duration_min=durations_min,
-                durations=durations,
+                max_rows=durations,
             )
             reports.append((f"{category} duration top", category_report_rows))
             widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows))]
