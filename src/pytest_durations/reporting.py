@@ -1,90 +1,149 @@
-"""Helper to get measurement report information rows."""
-from collections.abc import Collection, Iterable
+"""Helper to generate formatted measurement report rows from timing data."""
+from collections.abc import Collection
 from datetime import timedelta
-from operator import itemgetter
+from operator import attrgetter
 from statistics import median
-from typing import Callable, cast
+from typing import NamedTuple
 
-ReportRowT = tuple[str, str, str, str, str, str]
-TimeValuesT = tuple[str, int, float, float, float, float]
-
-# columns: 0 - name, 1 - calls, 2 - min, 3 - max, 4 - med, 5 - sum
-_CALLS_COLUMN_IDX = 1  # calls
-_SUM_COLUMN_IDX = 5  # sum
-_SORT_COLUMN_IDX = 5  # sum
-_COLUMNS_ORDER = (_SUM_COLUMN_IDX, 0, _CALLS_COLUMN_IDX, 4, 2, 3)  # sum, name, calls, med, min, max
-_GRAND_TOTAL_STR = "grand total"
+# Default sort field for report ordering
+_SORT_BY_DEFAULT = "sum"
 
 
 def get_report_rows(
     measurements: dict[str, list[float]],
     duration_min: float = -1.0,
-    durations: int = 0,
-) -> list[ReportRowT]:
-    """Return time measurement result rows."""
-    time_values_all = [
-        (name, len(times), min(times), max(times), median(times), sum(times)) for name, times in measurements.items()
-    ]
-    # verbose values are limited by minimal time and number of rows
-    time_values_verbose = [values for values in time_values_all if values[_SUM_COLUMN_IDX] >= duration_min]
-    time_values_verbose.sort(key=itemgetter(_SORT_COLUMN_IDX), reverse=True)
-    time_values_verbose = time_values_verbose[:durations] if durations else time_values_verbose
+    max_rows: int = 0,
+    sort_by: str = _SORT_BY_DEFAULT,
+) -> list["ReportRowT"]:
+    """Generate a formatted performance report from timing measurements.
 
-    report_rows = [
-        _get_report_header_row(),
-        *_get_report_timing_rows(time_values=time_values_verbose),
-        _get_report_footer_row(time_values=time_values_all),
-    ]
-    return [cast("ReportRowT", tuple(report_row[i] for i in _COLUMNS_ORDER)) for report_row in report_rows]
+    :param measurements: Mapping of operation names to lists of execution times (seconds).
+    :param duration_min: If specified, filter out entries with total time < this value.
+                         Use None (default) to disable filtering.
+    :param max_rows: Limit number of entries in report (excluding header and grand total).
+                     Use 0 (default) for no limit.
+    :param sort_by: Field to sort by — one of: 'name', 'calls', 'min', 'max', 'med', 'sum'.
+                    Default: 'sum' (descending).
+    :return: List of formatted rows including header, filtered/sorted entries, and grand total.
+    """
+    time_values: list[TimeValuesT] = []
+    time_values_grand = TimeValueGrandT(name=[], calls=[], min=[], max=[], med=[], sum=[])
+
+    for name, times in measurements.items():
+        time_value = TimeValuesT.from_times(name=name, times=times)
+        for idx in range(len(TimeValuesT._fields)):
+            time_values_grand[idx].append(time_value[idx])
+        if time_value.sum >= duration_min:
+            time_values.append(time_value)
+
+    time_value_grand = TimeValuesT.get_grand_total(time_values_grand=time_values_grand)
+
+    # Sort by requested field (descending)
+    time_values.sort(key=attrgetter(sort_by), reverse=True)
+    # Limit number of rows if requested
+    if max_rows > 0:
+        time_values = time_values[:max_rows]
+
+    # Build final report: header + filtered entries + grand total
+    result: list[ReportRowT] = [ReportRowT.get_header()]
+    result.extend(ReportRowT.from_time_value(time_value) for time_value in time_values)
+    result.append(ReportRowT.from_time_value(time_value_grand))
+
+    return result
 
 
-def get_report_max_widths(report_rows: Collection[ReportRowT]) -> tuple[int, int, int, int, int, int]:
-    """Return report columns max width."""
-    return (
-        max(len(row[0]) for row in report_rows),
-        max(len(row[1]) for row in report_rows),
-        max(len(row[2]) for row in report_rows),
-        max(len(row[3]) for row in report_rows),
-        max(len(row[4]) for row in report_rows),
-        max(len(row[5]) for row in report_rows),
+def get_report_max_widths(report_rows: Collection["ReportRowT"]) -> tuple[int, ...]:
+    """Return maximum width for each column in the report.
+
+    :param report_rows: Collection of report rows.
+    :return: Tuple of maximum widths per column.
+    """
+    return tuple(
+        max(len(row[idx]) for row in report_rows)
+        for idx in range(len(ReportRowT._fields))
     )
 
 
-def _get_report_header_row() -> ReportRowT:
-    """Return report header row."""
-    return "name", "num", "min", "max", "med", "total"
+class TimeValuesT(NamedTuple):
+    """Aggregated timing statistics for a single operation."""
 
+    name: str   # Operation name
+    calls: int  # Number of calls (invocations)
+    min: float  # Minimum execution time in seconds
+    max: float  # Maximum execution time in seconds
+    med: float  # Median execution time in seconds
+    sum: float  # Total (cumulative) execution time in seconds
 
-def _get_report_footer_row(time_values: list[TimeValuesT]) -> ReportRowT:
-    """Return grand total report row."""
+    @classmethod
+    def from_times(cls, name: str, times: Collection[float]) -> "TimeValuesT":
+        """Create aggregated timing stats from a list of individual timings."""
+        if not times:
+            return cls(name=name, calls=0, min=0.0, max=0.0, med=0.0, sum=0.0)
 
-    def _reduce(idx: int, func: Callable[[Iterable[float]], float]) -> float:
-        return func(times[idx] for times in time_values)
+        sorted_times = sorted(times)  # To avoid multiple passes for min/max/median
 
-    return (
-        (
-            _GRAND_TOTAL_STR,
-            str(_reduce(_CALLS_COLUMN_IDX, sum)),  # calls
-            str(timedelta(seconds=_reduce(2, min))),  # min time
-            str(timedelta(seconds=_reduce(3, max))),  # max time
-            str(timedelta(seconds=_reduce(4, median))),  # med time
-            str(timedelta(seconds=_reduce(5, sum))),  # sum time
+        return cls(
+            name=name,
+            calls=len(times),
+            min=sorted_times[0],
+            max=sorted_times[-1],
+            med=median(sorted_times),  # Efficient on sorted data
+            sum=sum(sorted_times),
         )
-        if time_values
-        else tuple(map(str, (_GRAND_TOTAL_STR, 0, *(timedelta(),) * 4)))
-    )
 
+    @classmethod
+    def get_grand_total(cls, time_values_grand: "TimeValueGrandT") -> "TimeValuesT":
+        """Return grand total aggregated timing stats."""
+        label = "grand total"
 
-def _get_report_timing_rows(time_values: list[TimeValuesT]) -> list[ReportRowT]:
-    """Return report time measurement rows."""
-    return [
-        (
-            times[0],
-            str(times[1]),
-            str(timedelta(seconds=times[2])),
-            str(timedelta(seconds=times[3])),
-            str(timedelta(seconds=times[4])),
-            str(timedelta(seconds=times[5])),
+        if not time_values_grand.name:
+            return cls(name=label, calls=0, min=0.0, max=0.0, med=0.0, sum=0.0)
+
+        return cls(
+            name=label,
+            calls=sum(time_values_grand.calls),
+            min=min(time_values_grand.min),
+            max=max(time_values_grand.max),
+            med=median(time_values_grand.med),
+            sum=sum(time_values_grand.sum),
         )
-        for times in time_values
-    ]
+
+
+# Same as TimeValuesT but with lists instead of individual fields
+TimeValueGrandT = NamedTuple(
+    "TimeValueGrandT",
+    ((k, list[TimeValuesT.__annotations__[k]]) for k in TimeValuesT._fields),
+)
+
+
+class ReportRowT(NamedTuple):
+    """Formatted row for display in a human-readable time report."""
+
+    total: str  # Formatted total time column (HH:MM:SS)
+    name: str   # Operation name column
+    num: str    # Number of calls column
+    med: str    # Formatted median column
+    min: str    # Formatted minimum column
+    max: str    # Formatted maximum column
+
+    @classmethod
+    def get_header(cls) -> "ReportRowT":
+        """Generate header row using field names as labels."""
+        return cls(*cls._fields)
+
+    @classmethod
+    def from_time_value(cls, time_value: TimeValuesT) -> "ReportRowT":
+        """Format a TimeValuesT into display-ready strings for reporting."""
+
+        def format_seconds(seconds: float) -> str:
+            """Format seconds as HH:MM:SS."""
+            return str(timedelta(seconds=seconds))
+
+        return cls(
+            total=format_seconds(seconds=time_value.sum),
+            name=time_value.name,
+            num=str(time_value.calls),
+            min=format_seconds(seconds=time_value.min),
+            max=format_seconds(seconds=time_value.max),
+            med=format_seconds(seconds=time_value.med),
+        )
