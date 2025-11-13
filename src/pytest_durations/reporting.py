@@ -77,8 +77,7 @@ class TimeValuesT(NamedTuple):
     @classmethod
     def from_times(cls, name: str, times: Collection[float]) -> "TimeValuesT":
         """Create aggregated timing stats from a list of individual timings."""
-        if not times:
-            return cls(name=name, calls=0, min=0.0, max=0.0, med=0.0, sum=0.0)
+        # It is not possible to get an empty times collection here
 
         sorted_times = sorted(times)  # To avoid multiple passes for min/max/median
 
