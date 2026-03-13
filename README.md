@@ -86,10 +86,14 @@ $ pytest
 
 ## Unreleased
 
-* drop support python3.9 and add support python3.14
+* todo: describe new features here
 
 
 ## Change Log
+
+### 1.6.2 (Mar 13, 2026)
+
+* drop support python3.9 and add support python3.14
 
 ### 1.6.1 (Aug 29, 2025)
 
