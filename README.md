@@ -85,6 +85,9 @@ $ pytest
 
 ## Change Log
 
+### Unreleased (XXX XX, 2026)
+* drop support python3.9 and add support python3.14
+
 ### 1.6.1 (Aug 29, 2025)
 
 * Introduced a new `--pytest-durations-group-by=none` option that preserves the full test node ID, including parameters

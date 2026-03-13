@@ -6,7 +6,7 @@ on:
     types: [ published ]
 
 env:
-  python-version-latest: "3.13"
+  python-version-latest: "3.14"
 
 defaults:
   run:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -28,7 +28,7 @@ jobs:
       - name: Prepare artefacts
         run: |
           pip install --no-cache-dir -U pip
-          pip install --no-cache-dir -U "poetry==2.1.*"
+          pip install --no-cache-dir -U "poetry==2.3.*"
           poetry install --no-root
           pre-commit run --all-files
           poetry build

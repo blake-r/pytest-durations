@@ -8,6 +8,7 @@ repos:
           - check
           - --fix
           - --exit-non-zero-on-fix
+          - --show-fixes
         types: [ python ]
         language: system
 

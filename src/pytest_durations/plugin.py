@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from contextlib import ExitStack, contextmanager
 from itertools import count
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 import pytest
 
@@ -44,7 +44,7 @@ class PytestDurationPlugin:
         self.last_fixture_teardown_start = 0.0
 
     @pytest.hookimpl(hookwrapper=True)
-    def pytest_fixture_setup(self, fixturedef: "FixtureDef", request: "SubRequest") -> Optional[Any]:
+    def pytest_fixture_setup(self, fixturedef: "FixtureDef", request: "SubRequest") -> Any | None:
         """Measure fixture setup execution duration."""
         fixture_key = get_fixture_key(fixturedef=fixturedef, item=request.node)
 
@@ -132,7 +132,7 @@ class PytestDurationPlugin:
                 max_rows=durations,
             )
             reports.append((f"{category} duration top", category_report_rows))
-            widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows))]
+            widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows), strict=False)]
         fullwidth = max(fullwidth, sum(widths) + len(widths) - 1)
         for section_name, category_report_rows in reports:
             terminalreporter.write_sep(sep="=", title=section_name, fullwidth=fullwidth)

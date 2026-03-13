@@ -14,11 +14,11 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Framework :: Pytest",
 ]
 include = ["LICENSE"]
@@ -28,7 +28,7 @@ pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
 pytest = ">=4.6"
-python = ">=3.9,<4.0"
+python = ">=3.10,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.1"

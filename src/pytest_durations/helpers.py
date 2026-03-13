@@ -1,10 +1,10 @@
 """Internal helper functions module."""
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from contextlib import suppress
 from functools import partial
 from itertools import chain, groupby
 from operator import itemgetter
-from typing import TYPE_CHECKING, Callable, Literal
+from typing import TYPE_CHECKING, Literal
 
 from pytest_durations.types import GroupBy
 

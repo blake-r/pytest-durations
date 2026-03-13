@@ -1,5 +1,5 @@
 """Pytest plugin mixin to be used when xdist package is used."""
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 import pytest
 
@@ -24,14 +24,14 @@ class PytestDurationXdistMixin:
     def pytest_sessionfinish(self, session: "Session", exitstatus: Union[int, "ExitCode"]) -> None:
         """Send measurements to the master process if the current session runs under pytest-xdist."""
         # for xdist, results should be added to worker output
-        workeroutput: Optional[dict[str, Any]] = getattr(session.config, _WORKEROUTPUT_ATTR, None)
+        workeroutput: dict[str, Any] | None = getattr(session.config, _WORKEROUTPUT_ATTR, None)
         if workeroutput is not None:
             workeroutput[_PLUGIN_KEY] = dump_measurements(self.measurements)
 
-    def pytest_testnodedown(self, node: "WorkerController", error: Optional[Any]) -> None:
+    def pytest_testnodedown(self, node: "WorkerController", error: Any | None) -> None:
         """Merge measurements from slave processes if the current sesions runs under pytest-xdist."""
         # for xdist, results should be accumulated from workers
-        workeroutput: Optional[dict[str, Any]] = getattr(node, _WORKEROUTPUT_ATTR, None)
+        workeroutput: dict[str, Any] | None = getattr(node, _WORKEROUTPUT_ATTR, None)
         if workeroutput is not None:
             node_measurements = node.workeroutput[_PLUGIN_KEY]
             load_measurements(node_measurements, self.measurements)
