@@ -108,11 +108,16 @@ class TimeValuesT(NamedTuple):
         )
 
 
-# Same as TimeValuesT but with lists instead of individual fields
-TimeValueGrandT = NamedTuple(
-    "TimeValueGrandT",
-    ((k, list[TimeValuesT.__annotations__[k]]) for k in TimeValuesT._fields),
-)
+class TimeValueGrandT(NamedTuple):
+    """Aggregated timing statistics across all operations (per-field lists)."""
+
+    # Keep field order and types in sync with TimeValuesT, but use lists.
+    name: list[str]
+    calls: list[int]
+    min: list[float]
+    max: list[float]
+    med: list[float]
+    sum: list[float]
 
 
 class ReportRowT(NamedTuple):

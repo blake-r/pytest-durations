@@ -1,7 +1,8 @@
 import sys
+from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 from importlib import import_module
-from typing import Callable, NamedTuple
+from typing import NamedTuple
 from unittest.mock import patch
 
 import pytest

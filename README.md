@@ -83,6 +83,12 @@ $ pre-commit install
 $ pytest
 ```
 
+
+## Unreleased
+
+* drop support python3.9 and add support python3.14
+
+
 ## Change Log
 
 ### 1.6.1 (Aug 29, 2025)
