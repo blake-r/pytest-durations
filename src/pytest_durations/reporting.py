@@ -1,4 +1,5 @@
 """Helper to generate formatted measurement report rows from timing data."""
+
 from collections.abc import Collection
 from datetime import timedelta
 from operator import attrgetter
@@ -27,7 +28,7 @@ def get_report_rows(
     :return: List of formatted rows including header, filtered/sorted entries, and grand total.
     """
     time_values: list[TimeValuesT] = []
-    time_values_grand = TimeValueGrandT(name=[], calls=[], min=[], max=[], med=[], sum=[])
+    time_values_grand = TimeValueGrandT([], [], [], [], [], [])
 
     for name, times in measurements.items():
         time_value = TimeValuesT.from_times(name=name, times=times)
@@ -58,16 +59,13 @@ def get_report_max_widths(report_rows: Collection["ReportRowT"]) -> tuple[int, .
     :param report_rows: Collection of report rows.
     :return: Tuple of maximum widths per column.
     """
-    return tuple(
-        max(len(row[idx]) for row in report_rows)
-        for idx in range(len(ReportRowT._fields))
-    )
+    return tuple(max(len(row[idx]) for row in report_rows) for idx in range(len(ReportRowT._fields)))
 
 
 class TimeValuesT(NamedTuple):
     """Aggregated timing statistics for a single operation."""
 
-    name: str   # Operation name
+    name: str  # Operation name
     calls: int  # Number of calls (invocations)
     min: float  # Minimum execution time in seconds
     max: float  # Maximum execution time in seconds
@@ -110,8 +108,7 @@ class TimeValuesT(NamedTuple):
 
 # Same as TimeValuesT but with lists instead of individual fields
 TimeValueGrandT = NamedTuple(
-    "TimeValueGrandT",
-    ((k, list[TimeValuesT.__annotations__[k]]) for k in TimeValuesT._fields),
+    "TimeValueGrandT", ((k, list[TimeValuesT.__annotations__[k]]) for k in TimeValuesT._fields),
 )
 
 
@@ -119,11 +116,11 @@ class ReportRowT(NamedTuple):
     """Formatted row for display in a human-readable time report."""
 
     total: str  # Formatted total time column (HH:MM:SS)
-    name: str   # Operation name column
-    num: str    # Number of calls column
-    med: str    # Formatted median column
-    min: str    # Formatted minimum column
-    max: str    # Formatted maximum column
+    name: str  # Operation name column
+    num: str  # Number of calls column
+    med: str  # Formatted median column
+    min: str  # Formatted minimum column
+    max: str  # Formatted maximum column
 
     @classmethod
     def get_header(cls) -> "ReportRowT":
