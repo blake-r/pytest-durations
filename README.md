@@ -88,6 +88,9 @@ $ pytest
 
 * todo: describe new features here
 
+* up support pytest version to 8.0.0+
+
+
 
 ## Change Log
 
