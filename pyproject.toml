@@ -27,7 +27,7 @@ include = ["LICENSE"]
 pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
-pytest = ">=8.0"
+pytest = ">=7.0"
 python = ">=3.10,<4.0"
 
 [tool.poetry.group.dev.dependencies]
