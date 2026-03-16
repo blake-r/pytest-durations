@@ -27,15 +27,15 @@ include = ["LICENSE"]
 pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
-pytest = ">=4.6"
+pytest = ">=7.0"
 python = ">=3.10,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.5"
 pre-commit = "^3.8.0"
-pytest = "^8.3.3"
+pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
-pytest-xdist = "^3.6.1"
+pytest-xdist = "^3.8.0"
 ruff = "^0.11.7"
 time-machine = "^2.19.0"
 virtualenv = "^21.2.0"
