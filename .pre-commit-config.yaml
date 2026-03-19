@@ -17,3 +17,9 @@ repos:
         entry: .github/scripts/check_version.py
         files: 'pyproject\.toml|src\/pytest_durations\/__init__\.py|README\.md$'
         language: python
+
+      - id: typos
+        name: check-typo
+        entry: typos
+        language: system
+        pass_filenames: false

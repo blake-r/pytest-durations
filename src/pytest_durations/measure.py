@@ -7,12 +7,12 @@ from pytest_durations.ticker import get_current_ticks
 class MeasureDuration:
     """Context manager measuring duration of block execution."""
 
-    start: float  # monotonic clock value of block entrace
+    start: float  # monotonic clock value of block entrance
     end: float  # monotonic clock value of block exit
     duration: float  # duration of block execution in seconds
 
     def __enter__(self) -> "MeasureDuration":
-        """Store block entrace time."""
+        """Store block entrance time."""
         self.start = get_current_ticks()
         self.duration = 0.0
         return self

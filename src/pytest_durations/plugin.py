@@ -145,7 +145,7 @@ class PytestDurationPlugin:
 
     @contextmanager
     def _measure(self, category: "Category", key: "FunctionKeyT") -> Iterable["MeasureDuration"]:
-        """Measure wrapping block exeution time and put it into a dict."""
+        """Measure wrapping block execution time and put it into a dict."""
         measurements = self.measurements[category]
 
         with MeasureDuration() as measurement:

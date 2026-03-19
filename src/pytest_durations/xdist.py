@@ -29,7 +29,7 @@ class PytestDurationXdistMixin:
             workeroutput[_PLUGIN_KEY] = dump_measurements(self.measurements)
 
     def pytest_testnodedown(self, node: "WorkerController", error: Any | None) -> None:
-        """Merge measurements from slave processes if the current sesions runs under pytest-xdist."""
+        """Merge measurements from slave processes if the current sessions runs under pytest-xdist."""
         # for xdist, results should be accumulated from workers
         workeroutput: dict[str, Any] | None = getattr(node, _WORKEROUTPUT_ATTR, None)
         if workeroutput is not None:

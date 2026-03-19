@@ -88,7 +88,8 @@ $ pytest
 
 * todo: describe new features here
 
-* up support pytest version to 8.0.0+
+* up support pytest version to 7.0.0+
+* add typos in pre-commits
 
 
 
