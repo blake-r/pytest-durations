@@ -29,8 +29,9 @@ class TestIsSharedFixture:
     def scoped(self):
         ...
 
+    @classmethod
     @pytest.fixture(scope="class")
-    def shared(self):
+    def shared(cls):
         ...
 
     @pytest.mark.parametrize(
@@ -49,8 +50,9 @@ class TestIsSharedFixture:
 
 
 class TestGetFixtureKey:
+    @classmethod
     @pytest.fixture(scope="class")
-    def class_level(self):
+    def class_level(cls):
         ...
 
     @pytest.mark.parametrize(
@@ -101,8 +103,9 @@ class TestGetGroupingFunc:
 
 
 class TestGetGroupedMeasurements:
+    @classmethod
     @pytest.fixture(scope="class")
-    def measurements(self) -> "FunctionMeasurementsT":
+    def measurements(cls) -> "FunctionMeasurementsT":
         return {
             "module.py::scope::function": [1.0],
             "module.py::scope": [2.0],
@@ -121,7 +124,7 @@ class TestGetGroupedMeasurements:
         def grouping_func(item: "MeasurementItemT") -> "FunctionKeyT":
             return item[0].rsplit("::", depth)[0]
 
-        depth, expected = rule
+        depth, _expected = rule
         get_grouped_measurements(measurements=measurements, grouping_func=grouping_func)
 
 
