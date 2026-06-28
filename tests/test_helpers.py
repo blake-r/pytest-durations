@@ -50,9 +50,9 @@ class TestIsSharedFixture:
 
 
 class TestGetFixtureKey:
-    @classmethod
+    @staticmethod
     @pytest.fixture(scope="class")
-    def class_level(cls):
+    def class_level():
         ...
 
     @pytest.mark.parametrize(
@@ -104,9 +104,9 @@ class TestGetGroupingFunc:
 
 
 class TestGetGroupedMeasurements:
-    @classmethod
+    @staticmethod
     @pytest.fixture(scope="class")
-    def measurements(cls) -> "FunctionMeasurementsT":
+    def measurements() -> "FunctionMeasurementsT":
         return {
             "module.py::scope::function": [1.0],
             "module.py::scope": [2.0],
