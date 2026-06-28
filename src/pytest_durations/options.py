@@ -57,12 +57,12 @@ def pytest_configure(config: "Config") -> None:
     if not config.getoption("--pytest-durations"):
         return
 
-    from pytest_durations.plugin import PytestDurationPlugin
+    from pytest_durations.plugin import PytestDurationPlugin  # noqa: PLC0415
 
     pluginmanager = config.pluginmanager
 
     if pluginmanager.hasplugin("xdist"):
-        from pytest_durations.xdist import PytestDurationXdistMixin
+        from pytest_durations.xdist import PytestDurationXdistMixin  # noqa: PLC0415
 
         PytestDurationPlugin = type("PytestDurationPlugin", (PytestDurationPlugin, PytestDurationXdistMixin), {})  # noqa: N806
 
