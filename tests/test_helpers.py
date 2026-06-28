@@ -29,9 +29,9 @@ class TestIsSharedFixture:
     def scoped(self):
         ...
 
-    @classmethod
+    @staticmethod
     @pytest.fixture(scope="class")
-    def shared(cls):
+    def shared():
         ...
 
     @pytest.mark.parametrize(
