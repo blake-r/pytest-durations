@@ -90,7 +90,7 @@ $ pytest
 
 * up support pytest version to 7.0.0+
 * add typos in pre-commits
-
+* fix fixture key handling (pytest 10 compatibility)
 
 
 ## Change Log

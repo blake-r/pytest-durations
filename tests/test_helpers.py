@@ -29,8 +29,9 @@ class TestIsSharedFixture:
     def scoped(self):
         ...
 
+    @staticmethod
     @pytest.fixture(scope="class")
-    def shared(self):
+    def shared():
         ...
 
     @pytest.mark.parametrize(
@@ -49,20 +50,22 @@ class TestIsSharedFixture:
 
 
 class TestGetFixtureKey:
+    @staticmethod
     @pytest.fixture(scope="class")
-    def class_level(self):
+    def class_level():
         ...
 
     @pytest.mark.parametrize(
         "rule",
         [
-            (module_level.__name__, "tests/test_helpers.py::module_level"),
-            (class_level.__name__, "tests/test_helpers.py::TestGetFixtureKey::class_level"),
-            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule2]::rule"),
+            ("package_level", "tests::package_level"),
+            ("module_level", "tests/test_helpers.py::module_level"),
+            ("class_level", "tests/test_helpers.py::TestGetFixtureKey::class_level"),
+            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule3]::rule"),
             ("tmp_path_factory", "tmp_path_factory"),
         ],
     )
-    @pytest.mark.usefixtures("module_level", "class_level")
+    @pytest.mark.usefixtures("package_level", "module_level", "class_level")
     def test_get_fixture_key(self, request: "FixtureRequest", tmp_path_factory, rule):
         fixture, expected = rule
         fixturedef = request._fixture_defs[fixture]
@@ -101,8 +104,9 @@ class TestGetGroupingFunc:
 
 
 class TestGetGroupedMeasurements:
+    @staticmethod
     @pytest.fixture(scope="class")
-    def measurements(self) -> "FunctionMeasurementsT":
+    def measurements() -> "FunctionMeasurementsT":
         return {
             "module.py::scope::function": [1.0],
             "module.py::scope": [2.0],
@@ -121,7 +125,7 @@ class TestGetGroupedMeasurements:
         def grouping_func(item: "MeasurementItemT") -> "FunctionKeyT":
             return item[0].rsplit("::", depth)[0]
 
-        depth, expected = rule
+        depth, _expected = rule
         get_grouped_measurements(measurements=measurements, grouping_func=grouping_func)
 
 
