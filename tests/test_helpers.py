@@ -58,13 +58,14 @@ class TestGetFixtureKey:
     @pytest.mark.parametrize(
         "rule",
         [
-            (module_level.__name__, "tests/test_helpers.py::module_level"),
-            (class_level.__name__, "tests/test_helpers.py::TestGetFixtureKey::class_level"),
-            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule2]::rule"),
+            ("package_level", "tests::package_level"),
+            ("module_level", "tests/test_helpers.py::module_level"),
+            ("class_level", "tests/test_helpers.py::TestGetFixtureKey::class_level"),
+            ("rule", "tests/test_helpers.py::TestGetFixtureKey::test_get_fixture_key[rule3]::rule"),
             ("tmp_path_factory", "tmp_path_factory"),
         ],
     )
-    @pytest.mark.usefixtures("module_level", "class_level")
+    @pytest.mark.usefixtures("package_level", "module_level", "class_level")
     def test_get_fixture_key(self, request: "FixtureRequest", tmp_path_factory, rule):
         fixture, expected = rule
         fixturedef = request._fixture_defs[fixture]

@@ -26,7 +26,7 @@ def is_shared_fixture(fixturedef: "FixtureDef") -> bool:
 
 def get_fixture_key(fixturedef: "FixtureDef", item: "Item") -> "FunctionKeyT":
     """Return fixture measurements dict key."""
-    has_location = fixturedef.node is not None
+    has_location = not fixturedef.baseid and fixturedef.scope == "function"
     baseid = get_test_key(item=item) if has_location else fixturedef.baseid
     return "::".join(filter(None, (baseid, fixturedef.argname)))
 
