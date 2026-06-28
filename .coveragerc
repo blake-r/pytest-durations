@@ -1,6 +1,7 @@
 [run]
 branch = true
-source_pkgs = pytest_durations
+source = pytest_durations
+disable_warnings = module-not-measured
 
 [report]
 exclude_lines =
@@ -11,6 +12,7 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
     if TYPE_CHECKING:
+    from typing import Self
 omit =
     */types.py
 show_missing = true
