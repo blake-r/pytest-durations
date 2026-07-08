@@ -1,6 +1,6 @@
 [run]
 branch = true
-source_pkgs = pytest_durations
+source = pytest_durations
 
 [report]
 exclude_lines =

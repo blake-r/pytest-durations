@@ -86,7 +86,9 @@ $ pytest
 
 ## Unreleased
 
-* todo: describe new features here
+Next release feature description.
+
+* Upgrade development dependencies
 
 
 ## Change Log
