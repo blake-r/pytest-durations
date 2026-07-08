@@ -88,16 +88,19 @@ $ pytest
 
 Next release feature description.
 
-* Upgrade development dependencies
-
 
 ## Change Log
 
-### 1.6.3 (Jun 28, 2026)
+### 1.7.0 (Jul 08, 2026)
 
 * Up support pytest version to 7.0.0+
+* Upgrade development dependencies
 * Add typos in pre-commits
 * Fix fixture key handling (pytest 10 compatibility)
+
+### 1.6.3 (Jun 28, 2026) [YANKED]
+
+*Note: Yanked due to SemVer mistake.*
 
 ### 1.6.2 (Mar 13, 2026)
 
