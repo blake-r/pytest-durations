@@ -4,9 +4,6 @@ from types import TracebackType
 
 from pytest_durations.ticker import get_current_ticks
 
-if typing.TYPE_CHECKING:
-    from typing import Self
-
 
 class MeasureDuration:
     """Context manager measuring duration of block execution."""
@@ -15,7 +12,7 @@ class MeasureDuration:
     end: float  # monotonic clock value of block exit
     duration: float  # duration of block execution in seconds
 
-    def __enter__(self) -> "Self":
+    def __enter__(self) -> "typing.Self":
         """Store block entrance time."""
         self.start = get_current_ticks()
         self.duration = 0.0
