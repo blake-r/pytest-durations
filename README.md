@@ -86,19 +86,22 @@ $ pytest
 
 ## Unreleased
 
-* todo: describe new features here
+Next release feature description.
 
-* up support pytest version to 7.0.0+
-* add typos in pre-commits
-* fix fixture key handling (pytest 10 compatibility)
 * Upgrade development dependencies
 
 
 ## Change Log
 
+### 1.6.3 (Jun 28, 2026)
+
+* Up support pytest version to 7.0.0+
+* Add typos in pre-commits
+* Fix fixture key handling (pytest 10 compatibility)
+
 ### 1.6.2 (Mar 13, 2026)
 
-* drop support python3.9 and add support python3.14
+* Drop support python3.9 and add support python3.14
 
 ### 1.6.1 (Aug 29, 2025)
 
