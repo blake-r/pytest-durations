@@ -40,35 +40,35 @@ Note: Please don't confuse these options with the --durations options that come 
 
 ```text
 ========================================= fixture duration top ==========================================
-total          name                                                     num med            min
-0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008076
-0:00:00.015807 tests/test_xdist.py::fake_session                          2 0:00:00.007904 0:00:00.007442
-0:00:00.014311 tests/test_options.py::fake_config                         2 0:00:00.007155 0:00:00.007126
-0:00:00.009118 tests/test_plugin.py::test_plugin_with_options::pytester   3 0:00:00.002232 0:00:00.002049
+total          name                                                     num med            max
+0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008867
+0:00:00.015807 tests/test_xdist.py::fake_session                          2 0:00:00.007904 0:00:00.007904
+0:00:00.014311 tests/test_options.py::fake_config                         2 0:00:00.007155 0:00:00.007155
+0:00:00.009118 tests/test_plugin.py::test_plugin_with_options::pytester   3 0:00:00.002232 0:00:00.002415
 0:00:00.005009 tests/test_options.py::reload_module                       1 0:00:00.005009 0:00:00.005009
-0:00:00.096780 grand total                                              164 0:00:00.000016 0:00:00.000010
+0:00:00.096780 grand total                                              164 0:00:00.000016 0:00:00.000073
 ======================================== test call duration top =========================================
-total          name                                                     num med            min
+total          name                                                     num med            max
 0:00:00.483961 tests/test_plugin.py::test_plugin_xdist_enabled            1 0:00:00.483961 0:00:00.483961
-0:00:00.177326 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.057389 0:00:00.057286
+0:00:00.177326 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.057389 0:00:00.109171
 0:00:00.067949 tests/test_plugin.py::test_plugin_with_resultlog           1 0:00:00.067949 0:00:00.067949
 0:00:00.066597 tests/test_plugin.py::test_plugin_disable                  1 0:00:00.066597 0:00:00.066597
 0:00:00.059509 tests/test_plugin.py::test_plugin_xdist_disabled           1 0:00:00.059509 0:00:00.059509
 0:00:00.025053 tests/test_ticker.py::test_freezegun_import_none           1 0:00:00.025053 0:00:00.025053
-0:00:00.023706 tests/test_ticker.py::test_get_current_ticks_frozen        2 0:00:00.011853 0:00:00.000215
-0:00:00.912538 grand total                                               78 0:00:00.000083 0:00:00.000050
+0:00:00.023706 tests/test_ticker.py::test_get_current_ticks_frozen        2 0:00:00.011853 0:00:00.065801
+0:00:00.912538 grand total                                               78 0:00:00.000083 0:00:00.000483
 ======================================== test setup duration top ========================================
-total          name                                                     num med            min
+total          name                                                     num med            max
 0:00:00.019535 tests/test_options.py::test_pytest_addoption               1 0:00:00.019535 0:00:00.019535
 0:00:00.016147 tests/test_options.py::test_pytest_configure_disabled      1 0:00:00.016147 0:00:00.016147
 0:00:00.015358 tests/test_options.py::test_pytest_configure               1 0:00:00.015358 0:00:00.015358
-0:00:00.010575 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.002773 0:00:00.002462
+0:00:00.010575 tests/test_plugin.py::test_plugin_with_options             3 0:00:00.002773 0:00:00.008465
 0:00:00.008763 tests/test_xdist.py::test_pytest_sessionfinish_noxdist     1 0:00:00.008763 0:00:00.008763
 0:00:00.007749 tests/test_xdist.py::test_pytest_sessionfinish             1 0:00:00.007749 0:00:00.007749
-0:00:00.100089 grand total                                               78 0:00:00.000113 0:00:00.000052
+0:00:00.100089 grand total                                               78 0:00:00.000113 0:00:00.000192
 ====================================== test teardown duration top =======================================
-total          name                                                     num med            min
-0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000044
+total          name                                                     num med            max
+0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000062
 ```
 
 ## Development
@@ -86,7 +86,8 @@ $ pytest
 
 ## Unreleased
 
-Next release feature description.
+* Show max duration instead of min in reports (#47) — fixes a regression from
+  v1.3.1 where the last column was accidentally truncated.
 
 
 ## Change Log
