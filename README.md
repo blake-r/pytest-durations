@@ -86,11 +86,13 @@ $ pytest
 
 ## Unreleased
 
-* Show max duration instead of min in reports (#47) — fixes a regression from
-  v1.3.1 where the last column was accidentally truncated.
-
 
 ## Change Log
+
+### 1.7.1 (Aug 06, 2026)
+
+* Show max duration instead of min in reports (#47) — fixes a regression from
+  v1.3.1 where the last column was accidentally truncated.
 
 ### 1.7.0 (Jul 08, 2026)
 
