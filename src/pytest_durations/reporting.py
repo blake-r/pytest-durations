@@ -127,8 +127,8 @@ class ReportRowT(NamedTuple):
     name: str   # Operation name column
     num: str    # Number of calls column
     med: str    # Formatted median column
-    min: str    # Formatted minimum column
     max: str    # Formatted maximum column
+    min: str    # Formatted minimum column
 
     @classmethod
     def get_header(cls) -> "ReportRowT":
