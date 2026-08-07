@@ -100,6 +100,30 @@ def test_plugin_disable(pytester, sample_testfile):
     result.stdout.no_fnmatch_line("*duration top*")
 
 
+@pytest.mark.parametrize(
+    ("show", "expected", "absent"),
+    [
+        (
+            "call",
+            ["* test call duration top *"],
+            ["* fixture duration top *", "* test setup duration top *", "* test teardown duration top *"],
+        ),
+        (
+            "fixture,call",
+            ["* fixture duration top *", "* test call duration top *"],
+            ["* test setup duration top *", "* test teardown duration top *"],
+        ),
+    ],
+)
+def test_plugin_show_sections(pytester, sample_testfile, show, expected, absent):
+    """Only the requested report sections are emitted."""
+    result = pytester.runpytest("--pytest-durations-show", show)
+    result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(expected)
+    for line in absent:
+        result.stdout.no_fnmatch_line(line)
+
+
 def test_plugin_xdist_disabled(pytester, sample_testfile):
     """Run when pytest-xdist is absent or disabled should be successful (#3)."""
     result = pytester.runpytest("-p", "no:xdist")

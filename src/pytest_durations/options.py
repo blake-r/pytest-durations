@@ -1,7 +1,7 @@
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
-from pytest_durations.types import GroupBy, TimeFormat
+from pytest_durations.types import ALL_CATEGORIES, GroupBy, TimeFormat, parse_categories
 
 if TYPE_CHECKING:
     from _pytest.config import Config, PytestPluginManager
@@ -12,6 +12,7 @@ DEFAULT_DURATIONS_MIN = 0.005
 DEFAULT_RESULT_LOG = "-"
 DEFAULT_GROUP_BY = GroupBy.FUNCTION
 DEFAULT_TIME_FORMAT = TimeFormat.CLOCK
+DEFAULT_SHOW_SECTIONS = ALL_CATEGORIES
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
@@ -60,6 +61,14 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
              f' "clock" shows the full datetime-style value, "short" a compact H:MM:SS,'
              f' and "auto" picks one readable form based on the report magnitude.'
              f' Default: "{DEFAULT_TIME_FORMAT}"',
+    )
+    group.addoption(
+        "--pytest-durations-show",
+        metavar="SECTIONS",
+        type=parse_categories,
+        default=DEFAULT_SHOW_SECTIONS,
+        help='Comma-separated list of report sections to show: "fixture", "call",'
+             ' "setup", "teardown". Default: show all sections.',
     )
 
 

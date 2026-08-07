@@ -131,7 +131,8 @@ class PytestDurationPlugin:
             default=0.0,
         )
         format_seconds = resolve_time_format(time_format=time_format, max_seconds=max_duration)
-        for category in Category:
+        selected_categories = config.getoption("--pytest-durations-show")
+        for category in selected_categories:
             grouping_func = test_grouping_func if category is not Category.FIXTURE_SETUP else fixture_grouping_func
             category_measurements = get_grouped_measurements(
                 grouping_func=grouping_func,
