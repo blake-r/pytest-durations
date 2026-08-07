@@ -37,6 +37,10 @@ pytest-durations:
                         full datetime-style value, "short" a compact H:MM:SS, and
                         "auto" picks one readable form based on the report
                         magnitude. Default: "clock"
+  --pytest-durations-show=SECTIONS
+                        Comma-separated list of report sections to show:
+                        "fixture", "call", "setup", "teardown". Default: show
+                        all sections.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -94,6 +98,9 @@ $ pytest
 * Added a `--pytest-durations-time-format` option with `clock`, `auto`, and `short`
   presets for formatting durations in the report (#49). The default (`clock`) keeps the
   existing output unchanged.
+* Added a `--pytest-durations-show` option to select which report sections are printed
+  (`fixture`, `call`, `setup`, `teardown`) (#48). By default all four tables are shown,
+  so existing output is unchanged.
 
 
 ## Change Log

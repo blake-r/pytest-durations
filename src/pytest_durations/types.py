@@ -1,4 +1,5 @@
 """Type declarations module."""
+from argparse import ArgumentTypeError
 from collections.abc import Iterator
 from enum import Enum
 
@@ -44,3 +45,32 @@ class TimeFormat(StrEnum):
     CLOCK = "clock"
     SHORT = "short"
     AUTO = "auto"
+
+
+ALL_CATEGORIES: tuple[Category, ...] = tuple(Category)
+
+CATEGORY_NAMES: dict[str, Category] = {
+    "fixture": Category.FIXTURE_SETUP,
+    "call": Category.TEST_CALL,
+    "setup": Category.TEST_SETUP,
+    "teardown": Category.TEST_TEARDOWN,
+}
+
+
+def parse_categories(value: str) -> tuple[Category, ...]:
+    """Parse a comma-separated list of section names into an ordered tuple of categories.
+
+    An empty value selects every category.
+    """
+    if not value:
+        return ALL_CATEGORIES
+    parsed: list[Category] = []
+    for raw_name in value.split(","):
+        name = raw_name.strip()
+        try:
+            parsed.append(CATEGORY_NAMES[name])
+        except KeyError:
+            choices = ", ".join(CATEGORY_NAMES)
+            message = f"unknown section {name!r}; choose from: {choices}"
+            raise ArgumentTypeError(message) from None
+    return tuple(parsed)
