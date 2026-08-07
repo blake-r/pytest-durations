@@ -49,23 +49,16 @@ class TimeFormat(StrEnum):
 
 ALL_CATEGORIES: tuple[Category, ...] = tuple(Category)
 
-# Selectable stat columns for --pytest-durations-columns. The row key ("name") is
-# always shown separately and can never be selected or used as a sort field.
+# Selectable stat columns for --pytest-durations-columns. Each key is a selectable
+# column name (also a ReportRowT field); its value is the TimeValuesT field used for
+# sorting. The row key ("name") is always shown separately and can never be selected
+# or used as a sort field.
 COLUMN_NAMES: dict[str, str] = {
-    "total": "total",
-    "num": "num",
-    "min": "min",
-    "med": "med",
-    "max": "max",
-}
-
-# Map a selectable column name to the numeric TimeValuesT field used for sorting.
-COLUMN_SORT_FIELDS: dict[str, str] = {
-    "total": "sum",
     "num": "calls",
     "min": "min",
-    "med": "med",
     "max": "max",
+    "med": "med",
+    "total": "sum",
 }
 
 DEFAULT_COLUMNS: tuple[str, ...] = ("total", "num", "med", "max")

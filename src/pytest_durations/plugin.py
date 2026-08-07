@@ -24,7 +24,7 @@ from pytest_durations.reporting import (
     resolve_time_format,
 )
 from pytest_durations.ticker import get_current_ticks
-from pytest_durations.types import COLUMN_SORT_FIELDS, Category
+from pytest_durations.types import COLUMN_NAMES, Category
 
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
@@ -126,7 +126,7 @@ class PytestDurationPlugin:
         test_grouping_func = get_test_grouping_func(group_by=group_by)
         fixture_grouping_func = get_fixture_grouping_func(group_by=group_by)
         selected_columns = config.getoption("--pytest-durations-columns")
-        sort_by = COLUMN_SORT_FIELDS[selected_columns[0]]
+        sort_by = COLUMN_NAMES[selected_columns[0]]
         max_duration = max(
             (
                 max(times)
