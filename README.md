@@ -100,6 +100,10 @@ $ pytest
 
 ## Unreleased
 
+## Change Log
+
+### 1.8.0 (Aug 07, 2026)
+
 * Added a `--pytest-durations-columns` option to select which stat columns are
   printed (`total`, `num`, `min`, `med`, `max`) and which one sorts the report
   (#47). The test/fixture name is always shown second. The default matches the
@@ -110,9 +114,6 @@ $ pytest
 * Added a `--pytest-durations-show` option to select which report sections are printed
   (`fixture`, `call`, `setup`, `teardown`) (#48). By default all four tables are shown,
   so existing output is unchanged.
-
-
-## Change Log
 
 ### 1.7.1 (Aug 06, 2026)
 
