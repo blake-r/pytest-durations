@@ -36,3 +36,11 @@ class GroupBy(StrEnum):
     CLASS = "class"
     FUNCTION = "function"
     NONE = "none"
+
+
+class TimeFormat(StrEnum):
+    """Possible duration formatting modes for the report."""
+
+    CLOCK = "clock"
+    SHORT = "short"
+    AUTO = "auto"
