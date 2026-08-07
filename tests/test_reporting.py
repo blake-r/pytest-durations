@@ -7,6 +7,8 @@ from pytest_durations.reporting import (
     format_seconds_short,
     get_report_max_widths,
     get_report_rows,
+    get_selected_max_widths,
+    report_column_fields,
     resolve_time_format,
 )
 
@@ -61,6 +63,33 @@ def test_get_report_rows_with_rows_limit(sample_measurements, expected_report_ro
 def test_get_report_max_widths(expected_report_rows):
     result = get_report_max_widths(expected_report_rows)
     assert result == (14, 11, 3, 14, 14, 14)
+
+
+@pytest.mark.parametrize(
+    ("selected", "expected"),
+    [
+        (("total", "num", "med", "max"), ("total", "name", "num", "med", "max")),
+        (("max",), ("max", "name")),
+        (("min", "max"), ("min", "name", "max")),
+        (("med", "min", "max"), ("med", "name", "min", "max")),
+    ],
+)
+def test_report_column_fields(selected, expected):
+    """name is always the second rendered column; first selected leads."""
+    assert report_column_fields(selected) == expected
+
+
+@pytest.mark.parametrize(
+    ("selected", "expected"),
+    [
+        (("total", "num", "med", "max"), (14, 11, 3, 14, 14)),
+        (("max",), (14, 11)),
+        (("min", "max"), (14, 11, 14)),
+    ],
+)
+def test_get_selected_max_widths(expected_report_rows, selected, expected):
+    """Widths are computed only over the actually-rendered columns."""
+    assert get_selected_max_widths(expected_report_rows, selected) == expected
 
 
 def test_time_format_clock():

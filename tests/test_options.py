@@ -6,7 +6,13 @@ from unittest.mock import create_autospec
 import pytest
 
 from pytest_durations.options import pytest_addoption, pytest_configure
-from pytest_durations.types import ALL_CATEGORIES, Category, parse_categories
+from pytest_durations.types import (
+    ALL_CATEGORIES,
+    DEFAULT_COLUMNS,
+    Category,
+    parse_categories,
+    parse_columns,
+)
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -33,7 +39,7 @@ def fake_config(fake_pluginmanager):
 def test_pytest_addoption(fake_parser, fake_pluginmanager):
     pytest_addoption(fake_parser, fake_pluginmanager)
     assert fake_parser.getgroup.called is True
-    assert fake_parser.getgroup.return_value.addoption.call_count == 6
+    assert fake_parser.getgroup.return_value.addoption.call_count == 7
 
 
 @pytest.mark.parametrize(
@@ -53,6 +59,25 @@ def test_parse_categories(value: str, expected: tuple[Category, ...]) -> None:
 def test_parse_categories_unknown() -> None:
     with pytest.raises(argparse.ArgumentTypeError):
         parse_categories("bogus")
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("", DEFAULT_COLUMNS),
+        ("total", ("total",)),
+        ("max,min", ("max", "min")),
+        ("num, med", ("num", "med")),
+        ("med,min,max", ("med", "min", "max")),
+    ],
+)
+def test_parse_columns(value: str, expected: tuple[str, ...]) -> None:
+    assert parse_columns(value) == expected
+
+
+def test_parse_columns_unknown() -> None:
+    with pytest.raises(argparse.ArgumentTypeError):
+        parse_columns("name")
 
 
 def test_pytest_configure(fake_config, fake_pluginmanager):

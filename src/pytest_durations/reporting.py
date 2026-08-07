@@ -144,6 +144,26 @@ def get_report_max_widths(report_rows: Collection["ReportRowT"]) -> tuple[int, .
     )
 
 
+def report_column_fields(selected_columns: Collection[str]) -> tuple[str, ...]:
+    """Resolve selected stat columns into the display fields actually rendered.
+
+    The first selected column is rendered first (it is the report sort key), then
+    ``name``, then the remaining selected columns. ``name`` is therefore always the
+    second rendered column and can never be first.
+    """
+    ordered = tuple(selected_columns)
+    return (ordered[0], "name", *ordered[1:])
+
+
+def get_selected_max_widths(
+    report_rows: Collection["ReportRowT"],
+    selected_columns: Collection[str],
+) -> tuple[int, ...]:
+    """Return the maximum width for each actually-rendered column."""
+    fields = report_column_fields(selected_columns)
+    return tuple(max(len(getattr(row, field)) for row in report_rows) for field in fields)
+
+
 class TimeValuesT(NamedTuple):
     """Aggregated timing statistics for a single operation."""
 

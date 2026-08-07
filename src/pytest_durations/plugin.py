@@ -17,9 +17,14 @@ from pytest_durations.helpers import (
 )
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
-from pytest_durations.reporting import get_report_max_widths, get_report_rows, resolve_time_format
+from pytest_durations.reporting import (
+    get_report_rows,
+    get_selected_max_widths,
+    report_column_fields,
+    resolve_time_format,
+)
 from pytest_durations.ticker import get_current_ticks
-from pytest_durations.types import Category
+from pytest_durations.types import COLUMN_SORT_FIELDS, Category
 
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
@@ -116,11 +121,12 @@ class PytestDurationPlugin:
         durations = config.getoption("--pytest-durations")
         durations_min = config.getoption("--pytest-durations-min")
         reports = []
-        widths = [0] * 5
         group_by = config.getoption("--pytest-durations-group-by")
         time_format = config.getoption("--pytest-durations-time-format")
         test_grouping_func = get_test_grouping_func(group_by=group_by)
         fixture_grouping_func = get_fixture_grouping_func(group_by=group_by)
+        selected_columns = config.getoption("--pytest-durations-columns")
+        sort_by = COLUMN_SORT_FIELDS[selected_columns[0]]
         max_duration = max(
             (
                 max(times)
@@ -142,17 +148,21 @@ class PytestDurationPlugin:
                 measurements=category_measurements,
                 duration_min=durations_min,
                 max_rows=durations,
+                sort_by=sort_by,
                 format_seconds=format_seconds,
             )
             reports.append((f"{category} duration top", category_report_rows))
-            widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows), strict=False)]
+        rendered_columns = report_column_fields(selected_columns)
+        all_rows = [row for _, rows in reports for row in rows]
+        widths = get_selected_max_widths(all_rows, selected_columns)
         fullwidth = max(fullwidth, sum(widths) + len(widths) - 1)
         for section_name, category_report_rows in reports:
             terminalreporter.write_sep(sep="=", title=section_name, fullwidth=fullwidth)
             for idx, row in enumerate(category_report_rows):
+                # align columns right except test name column
                 content = " ".join(
-                    f"{col:{'>' if idx and c else '<'}{width}}"  # align columns right except test name column
-                    for col, width, c in zip(row, widths, count(-1))
+                    f"{getattr(row, col):{'>' if idx and c else '<'}{width}}"
+                    for col, width, c in zip(rendered_columns, widths, count(-1))
                 )
                 terminalreporter.line(content)
 
