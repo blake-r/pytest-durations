@@ -41,6 +41,11 @@ pytest-durations:
                         Comma-separated list of report sections to show:
                         "fixture", "call", "setup", "teardown". Default: show
                         all sections.
+  --pytest-durations-columns=COLUMNS
+                        Comma-separated list of stat columns to show: "total",
+                        "num", "min", "med", "max". The test/fixture name is
+                        always shown second, and the first listed column is used
+                        to sort the report. Default: total,num,med,max.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -95,6 +100,10 @@ $ pytest
 
 ## Unreleased
 
+* Added a `--pytest-durations-columns` option to select which stat columns are
+  printed (`total`, `num`, `min`, `med`, `max`) and which one sorts the report
+  (#47). The test/fixture name is always shown second. The default matches the
+  existing output, so nothing changes unless the flag is used.
 * Added a `--pytest-durations-time-format` option with `clock`, `auto`, and `short`
   presets for formatting durations in the report (#49). The default (`clock`) keeps the
   existing output unchanged.

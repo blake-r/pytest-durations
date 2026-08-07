@@ -1,7 +1,14 @@
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
-from pytest_durations.types import ALL_CATEGORIES, GroupBy, TimeFormat, parse_categories
+from pytest_durations.types import (
+    ALL_CATEGORIES,
+    DEFAULT_COLUMNS,
+    GroupBy,
+    TimeFormat,
+    parse_categories,
+    parse_columns,
+)
 
 if TYPE_CHECKING:
     from _pytest.config import Config, PytestPluginManager
@@ -69,6 +76,16 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         default=DEFAULT_SHOW_SECTIONS,
         help='Comma-separated list of report sections to show: "fixture", "call",'
              ' "setup", "teardown". Default: show all sections.',
+    )
+    group.addoption(
+        "--pytest-durations-columns",
+        metavar="COLUMNS",
+        type=parse_columns,
+        default=DEFAULT_COLUMNS,
+        help='Comma-separated list of stat columns to show: "total", "num", "min",'
+             ' "med", "max". The test/fixture name is always shown second, and the'
+             ' first listed column is used to sort the report.'
+             f' Default: {",".join(DEFAULT_COLUMNS)}.',
     )
 
 

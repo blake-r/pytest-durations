@@ -49,6 +49,20 @@ class TimeFormat(StrEnum):
 
 ALL_CATEGORIES: tuple[Category, ...] = tuple(Category)
 
+# Selectable stat columns for --pytest-durations-columns. Each key is a selectable
+# column name (also a ReportRowT field); its value is the TimeValuesT field used for
+# sorting. The row key ("name") is always shown separately and can never be selected
+# or used as a sort field.
+COLUMN_NAMES: dict[str, str] = {
+    "num": "calls",
+    "min": "min",
+    "max": "max",
+    "med": "med",
+    "total": "sum",
+}
+
+DEFAULT_COLUMNS: tuple[str, ...] = ("total", "num", "med", "max")
+
 CATEGORY_NAMES: dict[str, Category] = {
     "fixture": Category.FIXTURE_SETUP,
     "call": Category.TEST_CALL,
@@ -73,4 +87,22 @@ def parse_categories(value: str) -> tuple[Category, ...]:
             choices = ", ".join(CATEGORY_NAMES)
             message = f"unknown section {name!r}; choose from: {choices}"
             raise ArgumentTypeError(message) from None
+    return tuple(parsed)
+
+
+def parse_columns(value: str) -> tuple[str, ...]:
+    """Parse a comma-separated list of stat column names into an ordered tuple.
+
+    An empty value selects the default column set.
+    """
+    if not value:
+        return DEFAULT_COLUMNS
+    parsed: list[str] = []
+    for raw_name in value.split(","):
+        name = raw_name.strip()
+        if name not in COLUMN_NAMES:
+            choices = ", ".join(COLUMN_NAMES)
+            message = f"unknown column {name!r}; choose from: {choices}"
+            raise ArgumentTypeError(message)
+        parsed.append(name)
     return tuple(parsed)

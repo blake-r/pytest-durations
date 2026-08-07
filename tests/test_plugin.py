@@ -124,6 +124,36 @@ def test_plugin_show_sections(pytester, sample_testfile, show, expected, absent)
         result.stdout.no_fnmatch_line(line)
 
 
+@pytest.mark.parametrize(
+    ("columns", "expected_header"),
+    [
+        ("min,med,max", "*min*name*med*max*"),
+        ("max", "*max*name*"),
+        ("num,min,med,max", "*num*name*min*med*max*"),
+    ],
+)
+def test_plugin_columns_order(pytester, sample_testfile, columns, expected_header):
+    """name is always the second rendered column; the first selected leads."""
+    result = pytester.runpytest("--pytest-durations-columns", columns)
+    result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines([expected_header])
+
+
+def test_plugin_columns_include_min(pytester, sample_testfile):
+    """min, excluded from the default, is available via the flag."""
+    result = pytester.runpytest("--pytest-durations-columns", "min,med,max")
+    result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(["*min*name*med*max*"])
+
+
+def test_plugin_columns_default_unchanged(pytester, sample_testfile, expected_output_lines):
+    """Without the flag, the default columns (no min) keep current output."""
+    result = pytester.runpytest()
+    result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(expected_output_lines)
+    result.stdout.fnmatch_lines(["*total*name*num*med*max*"])
+
+
 def test_plugin_xdist_disabled(pytester, sample_testfile):
     """Run when pytest-xdist is absent or disabled should be successful (#3)."""
     result = pytester.runpytest("-p", "no:xdist")
