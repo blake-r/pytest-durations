@@ -17,7 +17,7 @@ from pytest_durations.helpers import (
 )
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
-from pytest_durations.reporting import get_report_max_widths, get_report_rows
+from pytest_durations.reporting import get_report_max_widths, get_report_rows, resolve_time_format
 from pytest_durations.ticker import get_current_ticks
 from pytest_durations.types import Category
 
@@ -118,8 +118,19 @@ class PytestDurationPlugin:
         reports = []
         widths = [0] * 5
         group_by = config.getoption("--pytest-durations-group-by")
+        time_format = config.getoption("--pytest-durations-time-format")
         test_grouping_func = get_test_grouping_func(group_by=group_by)
         fixture_grouping_func = get_fixture_grouping_func(group_by=group_by)
+        max_duration = max(
+            (
+                max(times)
+                for measurements in self.measurements.values()
+                for times in measurements.values()
+                if times
+            ),
+            default=0.0,
+        )
+        format_seconds = resolve_time_format(time_format=time_format, max_seconds=max_duration)
         for category in Category:
             grouping_func = test_grouping_func if category is not Category.FIXTURE_SETUP else fixture_grouping_func
             category_measurements = get_grouped_measurements(
@@ -130,6 +141,7 @@ class PytestDurationPlugin:
                 measurements=category_measurements,
                 duration_min=durations_min,
                 max_rows=durations,
+                format_seconds=format_seconds,
             )
             reports.append((f"{category} duration top", category_report_rows))
             widths = [max(*a) for a in zip(widths, get_report_max_widths(category_report_rows), strict=False)]

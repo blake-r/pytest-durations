@@ -1,12 +1,97 @@
 """Helper to generate formatted measurement report rows from timing data."""
-from collections.abc import Collection
+from collections.abc import Callable, Collection
 from datetime import timedelta
 from operator import attrgetter
 from statistics import median
 from typing import NamedTuple
 
+from pytest_durations.types import StrEnum
+
 # Default sort field for report ordering
 _SORT_BY_DEFAULT = "sum"
+_SECONDS_PER_MINUTE = 60
+_SECONDS_PER_HOUR = 3600
+_SECONDS_PER_DAY = 86400
+
+
+class TimeFormat(StrEnum):
+    """Possible duration formatting modes for the report."""
+
+    CLOCK = "clock"
+    SHORT = "short"
+    AUTO = "auto"
+
+
+def format_seconds_clock(seconds: float) -> str:
+    """Format seconds exactly as ``str(timedelta(seconds=...))`` (default behavior)."""
+    return str(timedelta(seconds=seconds))
+
+
+def format_seconds_short(seconds: float) -> str:
+    """Format seconds as compact ``H:MM:SS`` (days folded into hours), no microseconds."""
+    total = int(seconds)
+    hours, rem = divmod(total, _SECONDS_PER_HOUR)
+    minutes, secs = divmod(rem, _SECONDS_PER_MINUTE)
+    return f"{hours}:{minutes:02d}:{secs:02d}"
+
+
+def _format_seconds_sub_second(seconds: float) -> str:
+    """Format sub-second durations in milliseconds."""
+    return f"{seconds * 1000:.0f}ms"
+
+
+def _format_seconds_millis(seconds: float) -> str:
+    """Format durations as ``SS.fff`` seconds."""
+    return f"{seconds:.3f}s"
+
+
+def _format_seconds_time(seconds: float) -> str:
+    """Format durations as ``M:SS`` minutes and seconds."""
+    total = int(seconds)
+    minutes, secs = divmod(total, _SECONDS_PER_MINUTE)
+    return f"{minutes}:{secs:02d}"
+
+
+def _format_seconds_hms(seconds: float) -> str:
+    """Format durations as ``H:MM:SS`` hours, minutes and seconds."""
+    total = int(seconds)
+    hours, rem = divmod(total, _SECONDS_PER_HOUR)
+    minutes, secs = divmod(rem, _SECONDS_PER_MINUTE)
+    return f"{hours}:{minutes:02d}:{secs:02d}"
+
+
+def _format_seconds_days(seconds: float) -> str:
+    """Format durations as ``Xd H:MM:SS`` days, hours, minutes and seconds."""
+    total = int(seconds)
+    days, rem = divmod(total, _SECONDS_PER_DAY)
+    hours, rem = divmod(rem, _SECONDS_PER_HOUR)
+    minutes, secs = divmod(rem, _SECONDS_PER_MINUTE)
+    return f"{days}d {hours}:{minutes:02d}:{secs:02d}"
+
+
+def resolve_time_format(time_format: TimeFormat, max_seconds: float) -> Callable[[float], str]:
+    """Resolve a :class:`TimeFormat` into a single concrete formatter for a whole report.
+
+    :param time_format: The requested formatting mode.
+    :param max_seconds: Global maximum duration (seconds) across all measurements, used to
+                        pick the *auto* form once for the whole report.
+    :return: A formatter callable mapping a duration (seconds) to a display string.
+    """
+    if time_format is TimeFormat.SHORT:
+        return format_seconds_short
+    if time_format is TimeFormat.CLOCK:
+        return format_seconds_clock
+    if max_seconds >= _SECONDS_PER_DAY:
+        formatter = _format_seconds_days
+    elif max_seconds >= _SECONDS_PER_HOUR:
+        formatter = _format_seconds_hms
+    elif max_seconds >= _SECONDS_PER_MINUTE:
+        formatter = _format_seconds_time
+    elif max_seconds >= 1:
+        formatter = _format_seconds_millis
+    else:
+        formatter = _format_seconds_sub_second
+    return formatter
 
 
 def get_report_rows(
@@ -14,6 +99,7 @@ def get_report_rows(
     duration_min: float = -1.0,
     max_rows: int = 0,
     sort_by: str = _SORT_BY_DEFAULT,
+    format_seconds: Callable[[float], str] = format_seconds_clock,
 ) -> list["ReportRowT"]:
     """Generate a formatted performance report from timing measurements.
 
@@ -24,6 +110,8 @@ def get_report_rows(
                      Use 0 (default) for no limit.
     :param sort_by: Field to sort by — one of: 'name', 'calls', 'min', 'max', 'med', 'sum'.
                     Default: 'sum' (descending).
+    :param format_seconds: Callable formatting a duration (seconds) into a display string.
+                           Defaults to the clock format.
     :return: List of formatted rows including header, filtered/sorted entries, and grand total.
     """
     time_values: list[TimeValuesT] = []
@@ -46,8 +134,8 @@ def get_report_rows(
 
     # Build final report: header + filtered entries + grand total
     result: list[ReportRowT] = [ReportRowT.get_header()]
-    result.extend(ReportRowT.from_time_value(time_value) for time_value in time_values)
-    result.append(ReportRowT.from_time_value(time_value_grand))
+    result.extend(ReportRowT.from_time_value(time_value, format_seconds=format_seconds) for time_value in time_values)
+    result.append(ReportRowT.from_time_value(time_value_grand, format_seconds=format_seconds))
 
     return result
 
@@ -136,13 +224,12 @@ class ReportRowT(NamedTuple):
         return cls(*cls._fields)
 
     @classmethod
-    def from_time_value(cls, time_value: TimeValuesT) -> "ReportRowT":
+    def from_time_value(
+        cls,
+        time_value: TimeValuesT,
+        format_seconds: Callable[[float], str] = format_seconds_clock,
+    ) -> "ReportRowT":
         """Format a TimeValuesT into display-ready strings for reporting."""
-
-        def format_seconds(seconds: float) -> str:
-            """Format seconds as HH:MM:SS."""
-            return str(timedelta(seconds=seconds))
-
         return cls(
             total=format_seconds(seconds=time_value.sum),
             name=time_value.name,

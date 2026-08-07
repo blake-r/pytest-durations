@@ -1,6 +1,7 @@
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
+from pytest_durations.reporting import TimeFormat
 from pytest_durations.types import GroupBy
 
 if TYPE_CHECKING:
@@ -11,6 +12,7 @@ DEFAULT_DURATIONS = 30
 DEFAULT_DURATIONS_MIN = 0.005
 DEFAULT_RESULT_LOG = "-"
 DEFAULT_GROUP_BY = GroupBy.FUNCTION
+DEFAULT_TIME_FORMAT = TimeFormat.CLOCK
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
@@ -49,6 +51,16 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         help=f'Group test durations by module, class, or function.'
              f' Use legacy grouping for backward compatibility.'
              f' Default: "{DEFAULT_GROUP_BY}"',
+    )
+    group.addoption(
+        "--pytest-durations-time-format",
+        type=TimeFormat,
+        default=DEFAULT_TIME_FORMAT,
+        choices=[*TimeFormat],
+        help=f'How to format durations in the report.'
+             f' "clock" shows the full datetime-style value, "short" a compact H:MM:SS,'
+             f' and "auto" picks one readable form based on the report magnitude.'
+             f' Default: "{DEFAULT_TIME_FORMAT}"',
     )
 
 

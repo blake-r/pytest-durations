@@ -32,6 +32,11 @@ pytest-durations:
                         Group test durations by module, class, or function. Use
                         legacy grouping for backward compatibility. Default:
                         "function"
+  --pytest-durations-time-format={clock,auto,short}
+                        How to format durations in the report. "clock" shows the
+                        full datetime-style value, "short" a compact H:MM:SS, and
+                        "auto" picks one readable form based on the report
+                        magnitude. Default: "clock"
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -85,6 +90,10 @@ $ pytest
 
 
 ## Unreleased
+
+* Added a `--pytest-durations-time-format` option with `clock`, `auto`, and `short`
+  presets for formatting durations in the report (#49). The default (`clock`) keeps the
+  existing output unchanged.
 
 
 ## Change Log
