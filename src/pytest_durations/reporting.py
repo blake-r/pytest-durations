@@ -5,21 +5,13 @@ from operator import attrgetter
 from statistics import median
 from typing import NamedTuple
 
-from pytest_durations.types import StrEnum
+from pytest_durations.types import TimeFormat
 
 # Default sort field for report ordering
 _SORT_BY_DEFAULT = "sum"
 _SECONDS_PER_MINUTE = 60
 _SECONDS_PER_HOUR = 3600
 _SECONDS_PER_DAY = 86400
-
-
-class TimeFormat(StrEnum):
-    """Possible duration formatting modes for the report."""
-
-    CLOCK = "clock"
-    SHORT = "short"
-    AUTO = "auto"
 
 
 def format_seconds_clock(seconds: float) -> str:

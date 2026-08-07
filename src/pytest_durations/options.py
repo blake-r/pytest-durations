@@ -1,8 +1,7 @@
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 
-from pytest_durations.reporting import TimeFormat
-from pytest_durations.types import GroupBy
+from pytest_durations.types import GroupBy, TimeFormat
 
 if TYPE_CHECKING:
     from _pytest.config import Config, PytestPluginManager
