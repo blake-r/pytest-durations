@@ -160,7 +160,8 @@ def test_plugin_xdist_disabled(pytester, sample_testfile):
     result.assert_outcomes(passed=2)
 
 
-def test_plugin_xdist_enabled(pytester, sample_testfile):
+def test_plugin_xdist_enabled(pytester, sample_testfile, expected_output_lines):
     """Run when pytest-xdist is enabled should be successful (#3)."""
     result = pytester.runpytest("--numprocesses", "2")
     result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(expected_output_lines)
