@@ -1,3 +1,4 @@
+import json
 import pathlib
 
 import pytest
@@ -160,7 +161,52 @@ def test_plugin_xdist_disabled(pytester, sample_testfile):
     result.assert_outcomes(passed=2)
 
 
-def test_plugin_xdist_enabled(pytester, sample_testfile):
+def test_plugin_xdist_enabled(pytester, sample_testfile, expected_output_lines):
     """Run when pytest-xdist is enabled should be successful (#3)."""
     result = pytester.runpytest("--numprocesses", "2")
     result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(expected_output_lines)
+
+
+# JSON export tests
+
+SAMPLE_JSON_NAME = "durations.json"
+
+
+@pytest.fixture
+def sample_json_file():
+    json_file = pathlib.Path(SAMPLE_JSON_NAME)
+    yield json_file
+    json_file.unlink(missing_ok=True)
+
+
+def test_plugin_json_export(pytester, sample_testfile, sample_json_file, expected_output_lines):
+    """JSON export should write timing data to a file alongside terminal report."""
+    result = pytester.runpytest("--pytest-durations-json", SAMPLE_JSON_NAME)
+    result.assert_outcomes(passed=2)
+    result.stdout.fnmatch_lines(expected_output_lines)
+    assert sample_json_file.exists()
+    data = json.loads(sample_json_file.read_text())
+    assert data["version"] == "1.0"
+    assert "categories" in data
+    assert "fixture" in data["categories"]
+    assert "test call" in data["categories"]
+
+
+def test_plugin_json_only(pytester, sample_testfile, sample_json_file):
+    """--pytest-durations=0 with --pytest-durations-json should suppress terminal but write JSON."""
+    result = pytester.runpytest("--pytest-durations", "0", "--pytest-durations-json", SAMPLE_JSON_NAME)
+    result.assert_outcomes(passed=2)
+    result.stdout.no_fnmatch_line("*duration top*")
+    assert sample_json_file.exists()
+    data = json.loads(sample_json_file.read_text())
+    assert "categories" in data
+
+
+def test_plugin_json_stdout(pytester, sample_testfile):
+    """--pytest-durations-json=- should emit JSON to stdout."""
+    result = pytester.runpytest("--pytest-durations", "0", "--pytest-durations-json", "-")
+    result.assert_outcomes(passed=2)
+    stdout = result.stdout.str()
+    assert '"version": "1.0"' in stdout
+    assert '"categories"' in stdout

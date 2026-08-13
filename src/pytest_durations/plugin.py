@@ -15,6 +15,7 @@ from pytest_durations.helpers import (
     get_test_key,
     is_shared_fixture,
 )
+from pytest_durations.json_exporter import export_json
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
 from pytest_durations.reporting import (
@@ -108,7 +109,13 @@ class PytestDurationPlugin:
         config: "Config",
     ) -> None:
         """Write the measured time to a terminal reporter or to a file."""
+        durations = config.getoption("--pytest-durations")
         result_log = config.getoption("--pytest-durations-log")
+        json_output = config.getoption("--pytest-durations-json")
+        if json_output:
+            export_json(measurements=self.measurements, filename=json_output)
+        if not durations:
+            return
         with ExitStack() as stack:
             if result_log != DEFAULT_RESULT_LOG:
                 result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))

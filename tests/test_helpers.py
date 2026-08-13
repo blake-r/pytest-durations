@@ -6,7 +6,6 @@ from pytest_durations.helpers import (
     _GROUPING_FUNC_MAP,
     _get_grouping_func,
     get_fixture_key,
-    get_grouped_measurements,
     get_test_key,
     is_shared_fixture,
 )
@@ -14,9 +13,6 @@ from pytest_durations.types import GroupBy
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest, SubRequest
-
-    from pytest_durations.helpers import MeasurementItemT
-    from pytest_durations.typing import FunctionKeyT, FunctionMeasurementsT
 
 
 @pytest.fixture
@@ -101,32 +97,6 @@ class TestGetGroupingFunc:
         with pytest.raises(NotImplementedError) as exc:
             _get_grouping_func(kind="test", group_by=cast("GroupBy", "invalid"))
         assert exc.match('Test grouping function for "invalid" not implemented')
-
-
-class TestGetGroupedMeasurements:
-    @staticmethod
-    @pytest.fixture(scope="class")
-    def measurements() -> "FunctionMeasurementsT":
-        return {
-            "module.py::scope::function": [1.0],
-            "module.py::scope": [2.0],
-            "module.py": [3.0],
-        }
-
-    @pytest.mark.parametrize(
-        "rule",
-        [
-            (1, {"module.py::scope::function": [1.0], "module.py::scope": [2.0], "module.py": [3.0]}),
-            (2, {"module.py::scope": [1.0, 2.0], "module.py": [3.0]}),
-            (3, {"module.py": [1.0, 2.0, 3.0]}),
-        ],
-    )
-    def test_get_grouped_measurements(self, measurements, rule):
-        def grouping_func(item: "MeasurementItemT") -> "FunctionKeyT":
-            return item[0].rsplit("::", depth)[0]
-
-        depth, _expected = rule
-        get_grouped_measurements(measurements=measurements, grouping_func=grouping_func)
 
 
 class TestTestGroupBy:

@@ -89,6 +89,25 @@ Time formatting supports three modes:
 - `short` — compact `H:MM:SS`
 - `auto` — picks the most appropriate format based on the maximum duration
 
+### JSON Export (`json_exporter.py`)
+
+When `--pytest-durations-json` is provided, timing data is exported to a JSON file in addition to (or instead of) the terminal report. The JSON contains summary statistics only:
+
+```json
+{
+  "version": "1.0",
+  "categories": {
+    "test call": [
+      {"name": "test_foo", "calls": 3, "total": 0.0045, "min": 0.001, "max": 0.002, "med": 0.0015}
+    ]
+  }
+}
+```
+
+Use `"-"` as the filename to write to stdout.
+
+When `--pytest-durations=0` is used together with `--pytest-durations-json`, the terminal report is suppressed and only the JSON file is produced.
+
 ### xdist Support (`xdist.py`)
 
 When `pytest-xdist` is active, measurements are collected on each worker and
@@ -102,11 +121,13 @@ serialization logic is required.
 
 ### Types (`types.py`)
 
-Domain enums use a consistent `StrEnum` pattern:
+Domain enums use a string-backed metaclass pattern:
 
 - `Category` — measurement categories (fixture, test call, test setup, test teardown)
 - `GroupBy` — grouping strategy (legacy, module, class, function, none)
 - `TimeFormat` — time display format (clock, short, auto)
+
+Note: `Category` intentionally uses a plain string metaclass rather than `StrEnum` or any enum subclass, because pytest-xdist's execnet channel cannot serialize enum objects. The metaclass keeps values as simple strings while still supporting iteration like an enum.
 
 ## Data Flow
 

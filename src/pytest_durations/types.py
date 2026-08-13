@@ -1,6 +1,28 @@
 """Type declarations module."""
 from argparse import ArgumentTypeError
+from collections.abc import Iterator
 from enum import Enum
+
+
+class CategoryMeta(type):
+    """Category should be a plain string, but compatible with Enum class iterator."""
+
+    def __iter__(cls) -> Iterator[str]:
+        """Return enumeration of class field values."""
+        return (v for k, v in cls.__dict__.items() if not k.startswith("__"))
+
+
+# NOTE: Do not replace with StrEnum or any enum subclass. Category values are
+# passed through pytest-xdist's execnet channel, which cannot serialize enum
+# objects. Using a plain string metaclass keeps values as simple strings while
+# still supporting iteration like an enum. See #67 and #74 for the full story.
+class Category(metaclass=CategoryMeta):
+    """Measurement category constants."""
+
+    FIXTURE_SETUP = "fixture"
+    TEST_CALL = "test call"
+    TEST_SETUP = "test setup"
+    TEST_TEARDOWN = "test teardown"
 
 
 class StrEnum(str, Enum):
@@ -9,15 +31,6 @@ class StrEnum(str, Enum):
     def __str__(self) -> str:
         """Return the current value (expected to be a string)."""
         return self.value
-
-
-class Category(StrEnum):
-    """Measurement category constants."""
-
-    FIXTURE_SETUP = "fixture"
-    TEST_CALL = "test call"
-    TEST_SETUP = "test setup"
-    TEST_TEARDOWN = "test teardown"
 
 
 class GroupBy(StrEnum):
