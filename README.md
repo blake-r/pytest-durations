@@ -18,7 +18,9 @@ $ pip install pytest-durations
 
 ## Plugin options
 
-```text
+```bash
+$ pytest --help
+
 pytest-durations:
   --pytest-durations=N  Show N slowest setup/test durations (N=0 to disable
                         plugin). Default 30
@@ -56,7 +58,11 @@ Note: Please don't confuse these options with the --durations options that come 
 
 ## Example of report
 
-```text
+```bash
+$ pytest --pytest-durations
+
+...
+
 ========================================= fixture duration top ==========================================
 total          name                                                     num med            max
 0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008867
@@ -89,6 +95,34 @@ total          name                                                     num med 
 0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000062
 ```
 
+```bash
+$ pytest --pytest-durations-columns=total,num,min,med,p90,p95,p99,max --pytest-durations-time-format=auto
+
+...
+
+============================================= fixture duration top =============================================
+total  name                                                        num min    med    p90    p95    p99    max
+0.135s tests/test_options.py::fake_pluginmanager                     3 0.031s 0.031s 0.065s 0.069s 0.072s 0.073s
+0.058s tests/test_options.py::fake_config                            2 0.027s 0.029s 0.031s 0.031s 0.031s 0.031s
+0.041s tests/test_xdist.py::fake_session                             2 0.020s 0.020s 0.021s 0.021s 0.021s 0.021s
+0.013s tests/test_plugin.py::sample_testfile                        17 0.000s 0.001s 0.001s 0.001s 0.001s 0.001s
+0.013s tests/test_xdist.py::fake_node                                2 0.006s 0.006s 0.007s 0.007s 0.007s 0.007s
+0.305s grand total                                                 289 0.000s 0.000s 0.002s 0.007s 0.046s 0.073s
+```
+
+### JSON Export Example
+
+```json
+{
+  "test call": [
+    {"name": "tests/test_foo.py::test_bar", "calls": 3, "total": 0.0045, "min": 0.001, "med": 0.0015, "p90": 0.0018, "p95": 0.0019, "p99": 0.002, "max": 0.002}
+  ],
+  "fixture": [
+    {"name": "tests/test_foo.py::my_fixture", "calls": 3, "total": 0.003, "min": 0.0009, "med": 0.001, "p90": 0.0011, "p95": 0.0011, "p99": 0.0011, "max": 0.0011}
+  ]
+}
+```
+
 ## Development
 
 The project uses [poetry](https://python-poetry.org/) for dependency management, [pytest](https://pytest.org/) for
@@ -107,6 +141,7 @@ $ pytest
 * Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
 * Improved test coverage by adding missing assertions (#56).
 * Added --pytest-durations-json option to export timing data as JSON for CI integration and programmatic consumption (#60).
+* Added p90, p95, p99 percentile columns to duration reports via --pytest-durations-columns (#57).
 
 ## Change Log
 
