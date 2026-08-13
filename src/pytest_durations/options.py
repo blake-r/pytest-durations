@@ -83,7 +83,7 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         type=parse_columns,
         default=DEFAULT_COLUMNS,
         help='Comma-separated list of stat columns to show: "total", "num", "min",'
-             ' "med", "max". The test/fixture name is always shown second, and the'
+             ' "med", "max", "p90", "p95", "p99". The test/fixture name is always shown second, and the'
              ' first listed column is used to sort the report.'
              f' Default: {",".join(DEFAULT_COLUMNS)}.',
     )

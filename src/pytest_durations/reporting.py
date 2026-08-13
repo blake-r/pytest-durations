@@ -198,7 +198,7 @@ class TimeValuesT(NamedTuple):
             calls=n,
             min=sorted_times[0],
             max=sorted_times[-1],
-            med=median(sorted_times),
+            med=_pct(50.0),
             sum=sum(sorted_times),
             p90=_pct(90.0),
             p95=_pct(95.0),
