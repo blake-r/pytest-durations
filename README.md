@@ -100,6 +100,8 @@ $ pytest
 
 ## Unreleased
 
+* Refactored Category to use StrEnum for improved type safety and cleaner serialization (#59).
+
 ## Change Log
 
 ### 1.8.0 (Aug 07, 2026)
