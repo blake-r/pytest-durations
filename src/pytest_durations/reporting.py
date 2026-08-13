@@ -164,6 +164,19 @@ def get_selected_max_widths(
     return tuple(max(len(getattr(row, field)) for row in report_rows) for field in fields)
 
 
+def _pct(sorted_times: list[float], p: float) -> float:
+    """Calculate the p-th percentile using linear interpolation."""
+    n = len(sorted_times)
+    if n == 1:
+        return sorted_times[0]
+    k = n - 1
+    idx = p / 100 * k
+    lower = int(idx)
+    upper = min(lower + 1, k)
+    frac = idx - lower
+    return sorted_times[lower] + frac * (sorted_times[upper] - sorted_times[lower])
+
+
 class TimeValuesT(NamedTuple):
     """Aggregated timing statistics for a single operation."""
 
@@ -183,26 +196,16 @@ class TimeValuesT(NamedTuple):
         sorted_times = sorted(times)
         n = len(sorted_times)
 
-        def _pct(p: float) -> float:
-            if n == 1:
-                return sorted_times[0]
-            k = n - 1
-            idx = p / 100 * k
-            lower = int(idx)
-            upper = min(lower + 1, k)
-            frac = idx - lower
-            return sorted_times[lower] + frac * (sorted_times[upper] - sorted_times[lower])
-
         return cls(
             name=name,
             calls=n,
             min=sorted_times[0],
             max=sorted_times[-1],
-            med=_pct(50.0),
+            med=_pct(sorted_times, 50.0),
             sum=sum(sorted_times),
-            p90=_pct(90.0),
-            p95=_pct(95.0),
-            p99=_pct(99.0),
+            p90=_pct(sorted_times, 90.0),
+            p95=_pct(sorted_times, 95.0),
+            p99=_pct(sorted_times, 99.0),
         )
 
     @classmethod
@@ -220,9 +223,9 @@ class TimeValuesT(NamedTuple):
             max=max(time_values_grand.max),
             med=median(time_values_grand.med),
             sum=sum(time_values_grand.sum),
-            p90=0.0,
-            p95=0.0,
-            p99=0.0,
+            p90=_pct(sorted(time_values_grand.p90), 90.0),
+            p95=_pct(sorted(time_values_grand.p95), 95.0),
+            p99=_pct(sorted(time_values_grand.p99), 99.0),
         )
 
 
