@@ -91,22 +91,11 @@ Time formatting supports three modes:
 
 ### JSON Export (`json_exporter.py`)
 
-When `--pytest-durations-json` is provided, timing data is exported to a JSON file in addition to (or instead of) the terminal report. The JSON contains summary statistics only:
+When `--pytest-durations-json` is provided, timing data is exported to a JSON file in addition to (or instead of) the terminal report. The JSON contains summary statistics only — no raw timing arrays.
 
-```json
-{
-  "version": "1.0",
-  "categories": {
-    "test call": [
-      {"name": "test_foo", "calls": 3, "total": 0.0045, "min": 0.001, "max": 0.002, "med": 0.0015}
-    ]
-  }
-}
-```
+Use `"-"` as the filename to write to stdout. When `--pytest-durations=0` is used together with `--pytest-durations-json`, the terminal report is suppressed and only the JSON file is produced.
 
-Use `"-"` as the filename to write to stdout.
-
-When `--pytest-durations=0` is used together with `--pytest-durations-json`, the terminal report is suppressed and only the JSON file is produced.
+The exporter lives in `json_exporter.py` and is called from `plugin.py` before the terminal report is rendered. It iterates over grouped measurements, computes `TimeValuesT` for each group, and serializes the result.
 
 ### xdist Support (`xdist.py`)
 

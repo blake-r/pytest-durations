@@ -102,6 +102,19 @@ total  name                                                        num min    me
 0.305s grand total                                                 289 0.000s 0.000s 0.002s 0.007s 0.046s 0.073s
 ```
 
+### JSON Export Example
+
+```json
+{
+  "test call": [
+    {"name": "tests/test_foo.py::test_bar", "calls": 3, "total": 0.0045, "min": 0.001, "med": 0.0015, "p90": 0.0018, "p95": 0.0019, "p99": 0.002, "max": 0.002}
+  ],
+  "fixture": [
+    {"name": "tests/test_foo.py::my_fixture", "calls": 3, "total": 0.003, "min": 0.0009, "med": 0.001, "p90": 0.0011, "p95": 0.0011, "p99": 0.0011, "max": 0.0011}
+  ]
+}
+```
+
 ## Development
 
 The project uses [poetry](https://python-poetry.org/) for dependency management, [pytest](https://pytest.org/) for
