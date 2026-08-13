@@ -63,6 +63,4 @@ jobs:
       - name: Publish distribution 📦 to PyPI
         if: github.event.release.prerelease == false
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+        # Trusted Publishing via OIDC — no token required
