@@ -104,7 +104,7 @@ When `--pytest-durations-json` is provided, timing data is exported to a JSON fi
 }
 ```
 
-The raw `times` array is intentionally excluded to keep output size bounded for large test suites. Use `"-"` as the filename to write to stdout.
+Use `"-"` as the filename to write to stdout.
 
 When `--pytest-durations=0` is used together with `--pytest-durations-json`, the terminal report is suppressed and only the JSON file is produced.
 
