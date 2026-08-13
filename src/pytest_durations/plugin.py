@@ -111,13 +111,13 @@ class PytestDurationPlugin:
         """Write the measured time to a terminal reporter or to a file."""
         durations = config.getoption("--pytest-durations")
         result_log = config.getoption("--pytest-durations-log")
+        json_output = config.getoption("--pytest-durations-json")
         if durations:
             with ExitStack() as stack:
                 if result_log != DEFAULT_RESULT_LOG:
                     result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
                     terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
                 self._report_summary(terminalreporter=terminalreporter, config=config)
-        json_output = config.getoption("--pytest-durations-json")
         if json_output:
             export_json(measurements=self.measurements, filename=json_output)
 
