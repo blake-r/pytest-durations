@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
+from pytest_durations.baseline import compare_to_baseline, format_github_annotation, load_baseline, save_baseline
 from pytest_durations.helpers import (
     get_fixture_grouping_func,
     get_fixture_key,
@@ -114,6 +115,38 @@ class PytestDurationPlugin:
                 result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
                 terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
             self._report_summary(terminalreporter=terminalreporter, config=config)
+
+        # Save baseline if requested
+        save_baseline_path = config.getoption("--pytest-durations-save-baseline")
+        if save_baseline_path:
+            save_baseline(measurements=self.measurements, path=save_baseline_path)
+
+        # Compare against baseline if provided
+        baseline_path = config.getoption("--pytest-durations-baseline")
+        if baseline_path:
+            baseline = load_baseline(baseline_path)
+            if baseline is not None:
+                threshold = config.getoption("--pytest-durations-baseline-threshold") / 100.0
+                regressions = compare_to_baseline(
+                    measurements=self.measurements,
+                    baseline=baseline,
+                    threshold=threshold,
+                )
+                if regressions:
+                    terminalreporter.write_sep(
+                        sep="=",
+                        title="duration regressions",
+                        fullwidth=terminalreporter._tw.fullwidth,  # noqa: SLF001
+                    )
+                    for regression in regressions:
+                        terminalreporter.line(
+                            f"  {regression['category']} '{regression['name']}' "
+                            f"+{regression['delta']*100:.1f}% "
+                            f"({regression['baseline']:.3f}s → {regression['current']:.3f}s)"
+                        )
+                        # Emit GitHub Actions annotation if running in CI
+                        if "GITHUB_ACTIONS" in __import__("os").environ:
+                            print(format_github_annotation(regression))
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""

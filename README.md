@@ -102,6 +102,7 @@ $ pytest
 
 * Refactored Category to use StrEnum for improved type safety and cleaner serialization (#59).
 * Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
+* Added baseline comparison: --pytest-durations-baseline, --pytest-durations-save-baseline, and --pytest-durations-baseline-threshold (#58).
 
 ## Change Log
 
