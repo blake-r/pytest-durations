@@ -43,9 +43,14 @@ pytest-durations:
                         all sections.
   --pytest-durations-columns=COLUMNS
                         Comma-separated list of stat columns to show: "total",
-                        "num", "min", "med", "max". The test/fixture name is
-                        always shown second, and the first listed column is used
-                        to sort the report. Default: total,num,med,max.
+                        "num", "min", "med", "max", "p90", "p95", "p99". The
+                        test/fixture name is always shown second, and the first
+                        listed column is used to sort the report. Default:
+                        total,num,med,max.
+  --pytest-durations-json=FILE
+                        Export timing data as JSON to FILE (use "-" for stdout).
+                        The JSON output is written in addition to the terminal
+                        report.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -99,6 +104,13 @@ $ pytest
 
 
 ## Unreleased
+
+* Added `--pytest-durations-json` option to export timing data as JSON for CI integration and programmatic consumption (#60).
+* Added p90, p95, p99 percentile columns to duration reports via `--pytest-durations-columns` (#57).
+* Refactored `Category` to use `StrEnum` for improved type safety and cleaner serialization (#59).
+* Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and `ARCHITECTURE.md` (#61).
+* Improved test coverage by adding missing assertions in several test cases (#56).
+* Backported fix to show max duration instead of min in reports to v1.6.x, released as v1.6.4 (#62).
 
 ## Change Log
 
