@@ -87,6 +87,14 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
              ' first listed column is used to sort the report.'
              f' Default: {",".join(DEFAULT_COLUMNS)}.',
     )
+    group.addoption(
+        "--pytest-durations-json",
+        metavar="FILE",
+        type=str,
+        default=None,
+        help='Export timing data as JSON to FILE (use "-" for stdout).'
+             ' If set, the JSON output is written in addition to the terminal report.',
+    )
 
 
 def pytest_configure(config: "Config") -> None:

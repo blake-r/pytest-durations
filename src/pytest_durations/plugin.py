@@ -15,6 +15,7 @@ from pytest_durations.helpers import (
     get_test_key,
     is_shared_fixture,
 )
+from pytest_durations.json_exporter import export_json
 from pytest_durations.measure import MeasureDuration
 from pytest_durations.options import DEFAULT_RESULT_LOG
 from pytest_durations.reporting import (
@@ -114,6 +115,17 @@ class PytestDurationPlugin:
                 result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
                 terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
             self._report_summary(terminalreporter=terminalreporter, config=config)
+        json_output = config.getoption("--pytest-durations-json")
+        if json_output:
+            max_duration = max(
+                (max(times) for measurements in self.measurements.values() for times in measurements.values() if times),
+                default=0.0,
+            )
+            format_seconds = resolve_time_format(
+                time_format=config.getoption("--pytest-durations-time-format"),
+                max_seconds=max_duration,
+            )
+            export_json(measurements=self.measurements, filename=json_output, format_seconds=format_seconds)
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""
