@@ -1,3 +1,4 @@
+import json
 import pathlib
 
 import pytest
@@ -185,7 +186,6 @@ def test_plugin_json_export(pytester, sample_testfile, sample_json_file, expecte
     result.assert_outcomes(passed=2)
     result.stdout.fnmatch_lines(expected_output_lines)
     assert sample_json_file.exists()
-    import json
     data = json.loads(sample_json_file.read_text())
     assert data["version"] == "1.0"
     assert "categories" in data
@@ -199,7 +199,6 @@ def test_plugin_json_only(pytester, sample_testfile, sample_json_file):
     result.assert_outcomes(passed=2)
     result.stdout.no_fnmatch_line("*duration top*")
     assert sample_json_file.exists()
-    import json
     data = json.loads(sample_json_file.read_text())
     assert "categories" in data
 

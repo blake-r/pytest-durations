@@ -6,7 +6,6 @@ from pathlib import Path
 from pytest_durations.json_exporter import export_json
 from pytest_durations.types import Category
 
-
 SAMPLE_MEASUREMENTS = {
     Category.TEST_CALL: {
         "test_foo": [0.001, 0.002],
