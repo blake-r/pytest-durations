@@ -46,9 +46,54 @@ pytest-durations:
                         "num", "min", "med", "max". The test/fixture name is
                         always shown second, and the first listed column is used
                         to sort the report. Default: total,num,med,max.
+  --pytest-durations-json=FILE
+                        Export timing data as JSON to FILE (use "-" for
+                        stdout). Written in addition to the terminal report
+                        unless --pytest-durations=0.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
+
+### JSON Export
+
+The `--pytest-durations-json` option exports all timing measurements to a JSON file for programmatic consumption or CI integration.
+
+**Examples:**
+
+```bash
+# Terminal report + JSON file
+pytest --pytest-durations-json=durations.json
+
+# JSON only, no terminal report
+pytest --pytest-durations=0 --pytest-durations-json=durations.json
+
+# JSON to stdout
+pytest --pytest-durations=0 --pytest-durations-json=-
+```
+
+**JSON structure (raw data only):**
+
+```json
+{
+  "version": "1.0",
+  "categories": {
+    "test call": [
+      {
+        "name": "test_foo",
+        "calls": 3,
+        "total": 0.0045,
+        "min": 0.001,
+        "max": 0.002,
+        "med": 0.0015,
+        "times": [0.001, 0.002, 0.0015]
+      }
+    ],
+    "fixture": [...]
+  }
+}
+```
+
+When `--pytest-durations-time-format` is set, human-readable fields (`total_hr`, `min_hr`, `max_hr`, `med_hr`) are added using the same formatter as the terminal report.
 
 ## Example of report
 
