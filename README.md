@@ -71,7 +71,7 @@ pytest --pytest-durations=0 --pytest-durations-json=durations.json
 pytest --pytest-durations=0 --pytest-durations-json=-
 ```
 
-**JSON structure (raw data only):**
+**JSON structure (summary stats only):**
 
 ```json
 {
@@ -84,16 +84,13 @@ pytest --pytest-durations=0 --pytest-durations-json=-
         "total": 0.0045,
         "min": 0.001,
         "max": 0.002,
-        "med": 0.0015,
-        "times": [0.001, 0.002, 0.0015]
+        "med": 0.0015
       }
     ],
     "fixture": [...]
   }
 }
 ```
-
-When `--pytest-durations-time-format` is set, human-readable fields (`total_hr`, `min_hr`, `max_hr`, `med_hr`) are added using the same formatter as the terminal report.
 
 ## Example of report
 

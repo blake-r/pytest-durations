@@ -119,15 +119,7 @@ class PytestDurationPlugin:
                 self._report_summary(terminalreporter=terminalreporter, config=config)
         json_output = config.getoption("--pytest-durations-json")
         if json_output:
-            max_duration = max(
-                (max(times) for measurements in self.measurements.values() for times in measurements.values() if times),
-                default=0.0,
-            )
-            format_seconds = resolve_time_format(
-                time_format=config.getoption("--pytest-durations-time-format"),
-                max_seconds=max_duration,
-            )
-            export_json(measurements=self.measurements, filename=json_output, format_seconds=format_seconds)
+            export_json(measurements=self.measurements, filename=json_output)
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""
