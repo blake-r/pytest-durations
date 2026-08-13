@@ -101,6 +101,7 @@ $ pytest
 ## Unreleased
 
 * Refactored Category to use StrEnum for improved type safety and cleaner serialization (#59).
+* Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
 
 ## Change Log
 

@@ -13,7 +13,32 @@ defaults:
     shell: bash
 
 jobs:
-  ci:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python-version-latest }}
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Prepare artefacts
+        run: |
+          pip install --no-cache-dir -U pip
+          pip install --no-cache-dir -U "poetry==2.3.*"
+          poetry install --no-root
+      - name: Run linters
+        run: pre-commit run --all-files
+
+  test:
+    needs: [lint]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,18 +46,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
       - name: Prepare artefacts
         run: |
           pip install --no-cache-dir -U pip
           pip install --no-cache-dir -U "poetry==2.3.*"
           poetry install --no-root
-          pre-commit run --all-files
           poetry build
           pip install --no-cache-dir -U dist/*.whl
+      - name: Verify wheel
+        run: |
+          python -c "import pytest_durations; print(pytest_durations.__version__)"
+          python -m pytest --co -q
       - name: Run tests
         run: pytest --showlocals -vv --cov
       - name: Upload artefacts
