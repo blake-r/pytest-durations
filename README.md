@@ -46,6 +46,10 @@ pytest-durations:
                         "num", "min", "med", "max". The test/fixture name is
                         always shown second, and the first listed column is used
                         to sort the report. Default: total,num,med,max.
+  --pytest-durations-json=FILE
+                        Export timing data as JSON to FILE (use "-" for
+                        stdout). Written in addition to the terminal report
+                        unless --pytest-durations=0.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -102,6 +106,7 @@ $ pytest
 
 * Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
 * Improved test coverage by adding missing assertions (#56).
+* Added --pytest-durations-json option to export timing data as JSON for CI integration and programmatic consumption (#60).
 
 ## Change Log
 
