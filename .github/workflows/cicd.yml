@@ -47,6 +47,8 @@ jobs:
     needs: [ ci ]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for Trusted Publishing to PyPI via OIDC
     steps:
       - name: Download artefacts
         uses: actions/download-artifact@v4
@@ -63,6 +65,4 @@ jobs:
       - name: Publish distribution 📦 to PyPI
         if: github.event.release.prerelease == false
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+        # Trusted Publishing via OIDC — no token required
