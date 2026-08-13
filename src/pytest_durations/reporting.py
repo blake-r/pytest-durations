@@ -107,7 +107,7 @@ def get_report_rows(
     :return: List of formatted rows including header, filtered/sorted entries, and grand total.
     """
     time_values: list[TimeValuesT] = []
-    time_values_grand = TimeValueGrandT(name=[], calls=[], min=[], max=[], med=[], sum=[])
+    time_values_grand = TimeValueGrandT(name=[], calls=[], min=[], max=[], med=[], sum=[], p90=[], p95=[], p99=[])
 
     for name, times in measurements.items():
         time_value = TimeValuesT.from_times(name=name, times=times)
@@ -173,21 +173,36 @@ class TimeValuesT(NamedTuple):
     max: float  # Maximum execution time in seconds
     med: float  # Median execution time in seconds
     sum: float  # Total (cumulative) execution time in seconds
+    p90: float  # 90th percentile execution time in seconds
+    p95: float  # 95th percentile execution time in seconds
+    p99: float  # 99th percentile execution time in seconds
 
     @classmethod
     def from_times(cls, name: str, times: Collection[float]) -> "TimeValuesT":
         """Create aggregated timing stats from a list of individual timings."""
-        # It is not possible to get an empty times collection here
+        sorted_times = sorted(times)
+        n = len(sorted_times)
 
-        sorted_times = sorted(times)  # To avoid multiple passes for min/max/median
+        def _pct(p: float) -> float:
+            if n == 1:
+                return sorted_times[0]
+            k = n - 1
+            idx = p / 100 * k
+            lower = int(idx)
+            upper = min(lower + 1, k)
+            frac = idx - lower
+            return sorted_times[lower] + frac * (sorted_times[upper] - sorted_times[lower])
 
         return cls(
             name=name,
-            calls=len(times),
+            calls=n,
             min=sorted_times[0],
             max=sorted_times[-1],
-            med=median(sorted_times),  # Efficient on sorted data
+            med=median(sorted_times),
             sum=sum(sorted_times),
+            p90=_pct(90.0),
+            p95=_pct(95.0),
+            p99=_pct(99.0),
         )
 
     @classmethod
@@ -196,7 +211,7 @@ class TimeValuesT(NamedTuple):
         label = "grand total"
 
         if not time_values_grand.name:
-            return cls(name=label, calls=0, min=0.0, max=0.0, med=0.0, sum=0.0)
+            return cls(name=label, calls=0, min=0.0, max=0.0, med=0.0, sum=0.0, p90=0.0, p95=0.0, p99=0.0)
 
         return cls(
             name=label,
@@ -205,6 +220,9 @@ class TimeValuesT(NamedTuple):
             max=max(time_values_grand.max),
             med=median(time_values_grand.med),
             sum=sum(time_values_grand.sum),
+            p90=0.0,
+            p95=0.0,
+            p99=0.0,
         )
 
 
@@ -218,6 +236,9 @@ class TimeValueGrandT(NamedTuple):
     max: list[float]
     med: list[float]
     sum: list[float]
+    p90: list[float]
+    p95: list[float]
+    p99: list[float]
 
 
 class ReportRowT(NamedTuple):
@@ -229,6 +250,9 @@ class ReportRowT(NamedTuple):
     med: str    # Formatted median column
     max: str    # Formatted maximum column
     min: str    # Formatted minimum column
+    p90: str    # Formatted 90th percentile column
+    p95: str    # Formatted 95th percentile column
+    p99: str    # Formatted 99th percentile column
 
     @classmethod
     def get_header(cls) -> "ReportRowT":
@@ -249,4 +273,7 @@ class ReportRowT(NamedTuple):
             min=format_seconds(seconds=time_value.min),
             max=format_seconds(seconds=time_value.max),
             med=format_seconds(seconds=time_value.med),
+            p90=format_seconds(seconds=time_value.p90),
+            p95=format_seconds(seconds=time_value.p95),
+            p99=format_seconds(seconds=time_value.p99),
         )

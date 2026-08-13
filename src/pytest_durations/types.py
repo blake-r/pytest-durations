@@ -50,6 +50,9 @@ COLUMN_NAMES: dict[str, str] = {
     "max": "max",
     "med": "med",
     "total": "sum",
+    "p90": "p90",
+    "p95": "p95",
+    "p99": "p99",
 }
 
 DEFAULT_COLUMNS: tuple[str, ...] = ("total", "num", "med", "max")

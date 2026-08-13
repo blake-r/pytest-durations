@@ -102,6 +102,7 @@ $ pytest
 
 * Refactored Category to use StrEnum for improved type safety and cleaner serialization (#59).
 * Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
+* Added p90, p95, p99 percentile columns to duration reports via --pytest-durations-columns (#57).
 
 ## Change Log
 

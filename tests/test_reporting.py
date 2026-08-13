@@ -24,10 +24,10 @@ def sample_measurements() -> dict[str, list[float]]:
 @pytest.fixture
 def expected_report_rows() -> list[ReportRowT]:
     return [
-        ReportRowT("total", "name", "num", "med", "max", "min"),
-        ReportRowT("0:00:03.700000", "fixture2", "3", "0:00:01.200000", "0:00:01.400000", "0:00:01.100000"),
-        ReportRowT("0:00:00.700000", "fixture1", "3", "0:00:00.200000", "0:00:00.400000", "0:00:00.100000"),
-        ReportRowT("0:00:04.400000", "grand total", "6", "0:00:00.700000", "0:00:01.400000", "0:00:00.100000"),
+        ReportRowT("total", "name", "num", "med", "max", "min", "p90", "p95", "p99"),
+        ReportRowT("0:00:03.700000", "fixture2", "3", "0:00:01.200000", "0:00:01.400000", "0:00:01.100000", "0:00:01.360000", "0:00:01.380000", "0:00:01.396000"),
+        ReportRowT("0:00:00.700000", "fixture1", "3", "0:00:00.200000", "0:00:00.400000", "0:00:00.100000", "0:00:00.360000", "0:00:00.380000", "0:00:00.396000"),
+        ReportRowT("0:00:04.400000", "grand total", "6", "0:00:00.700000", "0:00:01.400000", "0:00:00.100000", "0:00:00", "0:00:00", "0:00:00"),
     ]
 
 
@@ -41,8 +41,8 @@ def test_get_report_rows_empty_result():
     """Show header and zeroed footer rows only (empty report)."""
     result = get_report_rows(measurements={})
     assert result == [
-        ("total", "name", "num", "med", "max", "min"),
-        ("0:00:00", "grand total", "0", "0:00:00", "0:00:00", "0:00:00"),
+        ("total", "name", "num", "med", "max", "min", "p90", "p95", "p99"),
+        ("0:00:00", "grand total", "0", "0:00:00", "0:00:00", "0:00:00", "0:00:00", "0:00:00", "0:00:00"),
     ]
 
 
@@ -62,7 +62,7 @@ def test_get_report_rows_with_rows_limit(sample_measurements, expected_report_ro
 
 def test_get_report_max_widths(expected_report_rows):
     result = get_report_max_widths(expected_report_rows)
-    assert result == (14, 11, 3, 14, 14, 14)
+    assert result == (14, 11, 3, 14, 14, 14, 14, 14, 14)
 
 
 @pytest.mark.parametrize(
@@ -128,7 +128,7 @@ def test_get_report_rows_time_format_short(sample_measurements):
         format_seconds=format_seconds_short,
     )
     assert result[1:] == [
-        ReportRowT("0:00:03", "fixture2", "3", "0:00:01", "0:00:01", "0:00:01"),
-        ReportRowT("0:00:00", "fixture1", "3", "0:00:00", "0:00:00", "0:00:00"),
-        ReportRowT("0:00:04", "grand total", "6", "0:00:00", "0:00:01", "0:00:00"),
+        ReportRowT("0:00:03", "fixture2", "3", "0:00:01", "0:00:01", "0:00:01", "0:00:01", "0:00:01", "0:00:01"),
+        ReportRowT("0:00:00", "fixture1", "3", "0:00:00", "0:00:00", "0:00:00", "0:00:00", "0:00:00", "0:00:00"),
+        ReportRowT("0:00:04", "grand total", "6", "0:00:00", "0:00:01", "0:00:00", "0:00:00", "0:00:00", "0:00:00"),
     ]
