@@ -194,11 +194,10 @@ class TimeValuesT(NamedTuple):
     def from_times(cls, name: str, times: Collection[float]) -> "TimeValuesT":
         """Create aggregated timing stats from a list of individual timings."""
         sorted_times = sorted(times)
-        n = len(sorted_times)
 
         return cls(
             name=name,
-            calls=n,
+            calls=len(sorted_times),
             min=sorted_times[0],
             med=_pct(sorted_times, 50.0),
             p90=_pct(sorted_times, 90.0),
