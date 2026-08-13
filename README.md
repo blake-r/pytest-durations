@@ -54,44 +54,6 @@ pytest-durations:
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
 
-### JSON Export
-
-The `--pytest-durations-json` option exports all timing measurements to a JSON file for programmatic consumption or CI integration.
-
-**Examples:**
-
-```bash
-# Terminal report + JSON file
-pytest --pytest-durations-json=durations.json
-
-# JSON only, no terminal report
-pytest --pytest-durations=0 --pytest-durations-json=durations.json
-
-# JSON to stdout
-pytest --pytest-durations=0 --pytest-durations-json=-
-```
-
-**JSON structure (summary stats only):**
-
-```json
-{
-  "version": "1.0",
-  "categories": {
-    "test call": [
-      {
-        "name": "test_foo",
-        "calls": 3,
-        "total": 0.0045,
-        "min": 0.001,
-        "max": 0.002,
-        "med": 0.0015
-      }
-    ],
-    "fixture": [...]
-  }
-}
-```
-
 ## Example of report
 
 ```text
