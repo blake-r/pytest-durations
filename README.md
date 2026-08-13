@@ -90,19 +90,19 @@ total          name                                                     num med 
 ```
 
 ```text
-$ pytest --pytest-durations-columns=total,num,min,med,max,p90,p95,p99
+$ pytest --pytest-durations-columns=total,num,min,med,p90,p95,p99,max
 
 ========================================= fixture duration top ==========================================
-total          name                                                     num min            med            max            p90            p95            p99
+total          name                                                     num min            med            p90            p95            p99            max
 0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008867 0:00:00.008867 0:00:00.008867 0:00:00.008867 0:00:00.008867
 0:00:00.015807 tests/test_xdist.py::fake_session                          2 0:00:00.007904 0:00:00.007904 0:00:00.007904 0:00:00.007904 0:00:00.007904 0:00:00.007904
 0:00:00.014311 tests/test_options.py::fake_config                         2 0:00:00.007155 0:00:00.007155 0:00:00.007155 0:00:00.007155 0:00:00.007155 0:00:00.007155
 0:00:00.009118 tests/test_plugin.py::test_plugin_with_options::pytester   3 0:00:00.002232 0:00:00.002415 0:00:00.002415 0:00:00.002415 0:00:00.002415 0:00:00.002415
 0:00:00.005009 tests/test_options.py::reload_module                       1 0:00:00.005009 0:00:00.005009 0:00:00.005009 0:00:00.005009 0:00:00.005009 0:00:00.005009
-0:00:00.096780 grand total                                              164 0:00:00.000016 0:00:00.000073 0:00:00.000073 0:00:00        0:00:00        0:00:00
+0:00:00.096780 grand total                                              164 0:00:00.000016 0:00:00.000073 0:00:00        0:00:00        0:00:00        0:00:00.000073
 ```
 
-Note: Grand total percentiles are intentionally zeroed — percentiles of aggregated values are statistically misleading.
+Note: Grand total percentiles are aggregated from per-test percentiles (same approach as the median).
 
 ### JSON Export
 
