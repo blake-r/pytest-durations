@@ -18,7 +18,9 @@ $ pip install pytest-durations
 
 ## Plugin options
 
-```text
+```bash
+$ pytest --help
+
 pytest-durations:
   --pytest-durations=N  Show N slowest setup/test durations (N=0 to disable
                         plugin). Default 30
@@ -56,7 +58,11 @@ Note: Please don't confuse these options with the --durations options that come 
 
 ## Example of report
 
-```text
+```bash
+$ pytest --pytest-durations
+
+...
+
 ========================================= fixture duration top ==========================================
 total          name                                                     num med            max
 0:00:00.031589 tests/test_options.py::fake_pluginmanager                  3 0:00:00.008776 0:00:00.008867
@@ -89,8 +95,10 @@ total          name                                                     num med 
 0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000062
 ```
 
-```text
+```bash
 $ pytest --pytest-durations-columns=total,num,min,med,p90,p95,p99,max --pytest-durations-time-format=auto
+
+...
 
 ============================================= fixture duration top =============================================
 total  name                                                        num min    med    p90    p95    p99    max
