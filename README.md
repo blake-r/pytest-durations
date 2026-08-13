@@ -90,19 +90,16 @@ total          name                                                     num med 
 ```
 
 ```text
-$ pytest --pytest-durations-columns=total,num,min,med,p90,p95,p99,max
+$ pytest --pytest-durations-columns=total,num,min,med,p90,p95,p99,max --pytest-durations-time-format=auto
 
-========================================================================= fixture duration top =========================================================================
-total          name                                                        num min            med            p90            p95            p99            max
-0:00:00.121445 tests/test_options.py::fake_pluginmanager                     3 0:00:00.028014 0:00:00.029777 0:00:00.056879 0:00:00.060266 0:00:00.062977 0:00:00.063654
-0:00:00.048891 tests/test_options.py::fake_config                            2 0:00:00.022540 0:00:00.024445 0:00:00.025970 0:00:00.026160 0:00:00.026313 0:00:00.026351
-0:00:00.040457 tests/test_xdist.py::fake_session                             2 0:00:00.018033 0:00:00.020229 0:00:00.021985 0:00:00.022204 0:00:00.022380 0:00:00.022424
-0:00:00.013566 tests/test_xdist.py::fake_node                                2 0:00:00.006442 0:00:00.006783 0:00:00.007056 0:00:00.007090 0:00:00.007118 0:00:00.007124
-0:00:00.011153 tests/test_plugin.py::sample_testfile                        17 0:00:00.000366 0:00:00.000663 0:00:00.000804 0:00:00.000906 0:00:00.000968 0:00:00.000984
-0:00:00.008337 tests/test_options.py::test_parse_categories                 10 0:00:00.000029 0:00:00.000052 0:00:00.001008 0:00:00.004355 0:00:00.007034 0:00:00.007703
-0:00:00.006377 tests/test_options.py::fake_parser                            1 0:00:00.006377 0:00:00.006377 0:00:00.006377 0:00:00.006377 0:00:00.006377 0:00:00.006377
-0:00:00.006370 tests/test_plugin.py::test_plugin_with_options                9 0:00:00.000035 0:00:00.000080 0:00:00.001635 0:00:00.002828 0:00:00.003782 0:00:00.004021
-0:00:00.284600 grand total                                                 289 0:00:00.000013 0:00:00.000047 0:00:00.001482 0:00:00.006948 0:00:00.039512 0:00:00.063654
+============================================= fixture duration top =============================================
+total  name                                                        num min    med    p90    p95    p99    max
+0.135s tests/test_options.py::fake_pluginmanager                     3 0.031s 0.031s 0.065s 0.069s 0.072s 0.073s
+0.058s tests/test_options.py::fake_config                            2 0.027s 0.029s 0.031s 0.031s 0.031s 0.031s
+0.041s tests/test_xdist.py::fake_session                             2 0.020s 0.020s 0.021s 0.021s 0.021s 0.021s
+0.013s tests/test_plugin.py::sample_testfile                        17 0.000s 0.001s 0.001s 0.001s 0.001s 0.001s
+0.013s tests/test_xdist.py::fake_node                                2 0.006s 0.006s 0.007s 0.007s 0.007s 0.007s
+0.305s grand total                                                 289 0.000s 0.000s 0.002s 0.007s 0.046s 0.073s
 ```
 
 ## Development
