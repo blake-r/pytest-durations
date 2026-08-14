@@ -138,12 +138,16 @@ $ pytest
 
 ## Unreleased
 
-* Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
-* Improved test coverage by adding missing assertions (#56).
-* Added --pytest-durations-json option to export timing data as JSON for CI integration and programmatic consumption (#60).
-* Added p90, p95, p99 percentile columns to duration reports via --pytest-durations-columns (#57).
+*Nothing unreleased yet.*
 
 ## Change Log
+
+### 1.9.0 (Aug 14, 2026)
+
+* Improved CI/CD: split lint/test jobs, added Poetry caching, wheel smoke-test, and ARCHITECTURE.md (#61).
+* Improved test coverage by adding missing assertions (#56).
+* Added `--pytest-durations-json` option to export timing data as JSON for CI integration and programmatic consumption (#60).
+* Added `p90`, `p95`, `p99` percentile columns to duration reports via `--pytest-durations-columns` (#57).
 
 ### 1.8.0 (Aug 07, 2026)
 
