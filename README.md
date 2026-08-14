@@ -138,6 +138,8 @@ $ pytest
 
 ## Unreleased
 
+*Nothing unreleased yet.*
+
 ## Change Log
 
 ### 1.9.0 (Aug 14, 2026)
