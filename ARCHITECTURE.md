@@ -100,6 +100,19 @@ merged on the master node:
 Serialization uses plain Python dicts with string keys, so no custom
 serialization logic is required.
 
+### Baseline Comparison (`baseline.py`)
+
+The baseline module enables performance regression detection across test runs:
+
+1. `save_baseline()` — serializes aggregated measurements to a JSON file
+2. `load_baseline()` — reads a previously saved baseline
+3. `compare_to_baseline()` — computes relative slowdowns and returns regressions above a threshold
+4. `format_github_annotation()` — formats regressions as GitHub Actions workflow commands
+
+The baseline file stores per-test `total` time by category. Comparison happens
+after aggregation (including xdist merge), so baseline data is always
+representative of the full test suite.
+
 ### Types (`types.py`)
 
 Domain enums use a consistent `StrEnum` pattern:

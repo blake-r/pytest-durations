@@ -18,7 +18,9 @@ $ pip install pytest-durations
 
 ## Plugin options
 
-```text
+```bash
+$ pytest --help
+
 pytest-durations:
   --pytest-durations=N  Show N slowest setup/test durations (N=0 to disable
                         plugin). Default 30
@@ -43,9 +45,25 @@ pytest-durations:
                         all sections.
   --pytest-durations-columns=COLUMNS
                         Comma-separated list of stat columns to show: "total",
-                        "num", "min", "med", "max". The test/fixture name is
-                        always shown second, and the first listed column is used
-                        to sort the report. Default: total,num,med,max.
+                        "num", "min", "med", "max", "p90", "p95", "p99". The
+                        test/fixture name is always shown second, and the first
+                        listed column is used to sort the report. Default:
+                        total,num,med,max.
+  --pytest-durations-json=FILE
+                        Export timing data as JSON to FILE (use "-" for
+                        stdout). Written in addition to the terminal report
+                        unless --pytest-durations=0.
+  --pytest-durations-baseline=FILE
+                        Load baseline from FILE for comparison. Tests that are
+                        slower than the baseline by more than the threshold are
+                        flagged.
+  --pytest-durations-baseline-threshold=PERCENT
+                        Minimum percentage slowdown to report (e.g., 10.0 =
+                        10%). Only used when --pytest-durations-baseline is set.
+                        Default: 10.0
+  --pytest-durations-save-baseline=FILE
+                        Save current timing data as baseline to FILE for future
+                        comparison.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -84,6 +102,27 @@ total          name                                                     num med 
 total          name                                                     num med            max
 0:00:00.006716 grand total                                               78 0:00:00.000062 0:00:00.000062
 ```
+
+## Baseline Comparison
+
+Save timing data from a reference run and compare future runs against it to detect slowdowns:
+
+```bash
+# Save baseline from the current run
+$ pytest --pytest-durations-save-baseline=baseline.json
+
+# Compare subsequent runs against the baseline
+$ pytest --pytest-durations-baseline=baseline.json --pytest-durations-baseline-threshold=10.0
+
+...
+
+====================================== test call duration top =======================================
+total     name                           num  med        change
+0:00:05   tests/test_foo.py::test_bar    10   0:00:00.110  +120% ⚠️
+0:00:03   tests/test_baz.py::test_qux    5    0:00:00.070  -30%
+```
+
+When running in GitHub Actions, regressions above the threshold are automatically emitted as workflow annotations.
 
 ## Development
 

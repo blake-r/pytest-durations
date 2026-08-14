@@ -92,24 +92,24 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         metavar="FILE",
         type=str,
         default=None,
-        help='Load baseline from FILE for comparison. Tests that are slower than'
-             ' the baseline by more than the threshold are flagged.',
+        help="Load baseline from FILE for comparison. Tests that are slower than"
+             " the baseline by more than the threshold are flagged.",
     )
     group.addoption(
         "--pytest-durations-baseline-threshold",
         metavar="PERCENT",
         type=float,
         default=10.0,
-        help='Minimum percentage slowdown to report (e.g., 10.0 = 10%%).'
-             ' Only used when --pytest-durations-baseline is set.'
-             ' Default: 10.0',
+        help="Minimum percentage slowdown to report (e.g., 10.0 = 10%%)."
+             " Only used when --pytest-durations-baseline is set."
+             " Default: 10.0",
     )
     group.addoption(
         "--pytest-durations-save-baseline",
         metavar="FILE",
         type=str,
         default=None,
-        help='Save current timing data as baseline to FILE for future comparison.',
+        help="Save current timing data as baseline to FILE for future comparison.",
     )
 
 

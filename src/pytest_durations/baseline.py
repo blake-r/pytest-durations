@@ -28,7 +28,7 @@ def load_baseline(path: str | Path) -> dict[str, dict[str, float]] | None:
 
 
 def compare_to_baseline(
-    measurements: "CategoryMeasurementsT",
+    measurements: CategoryMeasurementsT,
     baseline: dict[str, dict[str, float]],
     threshold: float = 0.1,
 ) -> list[dict]:
@@ -65,7 +65,7 @@ def compare_to_baseline(
     return regressions
 
 
-def save_baseline(measurements: "CategoryMeasurementsT", path: str | Path) -> None:
+def save_baseline(measurements: CategoryMeasurementsT, path: str | Path) -> None:
     """Save current measurements as a baseline JSON file.
 
     :param measurements: Current timing measurements.

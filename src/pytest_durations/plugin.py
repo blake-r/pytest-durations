@@ -142,11 +142,11 @@ class PytestDurationPlugin:
                         terminalreporter.line(
                             f"  {regression['category']} '{regression['name']}' "
                             f"+{regression['delta']*100:.1f}% "
-                            f"({regression['baseline']:.3f}s → {regression['current']:.3f}s)"
+                            f"({regression['baseline']:.3f}s → {regression['current']:.3f}s)",
                         )
                         # Emit GitHub Actions annotation if running in CI
                         if "GITHUB_ACTIONS" in __import__("os").environ:
-                            print(format_github_annotation(regression))
+                            terminalreporter.line(format_github_annotation(regression))
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""
