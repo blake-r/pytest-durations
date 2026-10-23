@@ -40,10 +40,10 @@ pytest-xdist = "^3.8.0"
 ruff = "^0.17.2"
 typos = "^1.51.1"
 time-machine = "^3.5.1"
-virtualenv = "^21.5.1"
+virtualenv = "^21.14.13"
 
 [tool.poetry.group.sync.dependencies]
-poetry = "*"
+poetry = "^2.5.1"
 setuptools = "*"
 wheel = "*"
 zstandard = "^0.25"
