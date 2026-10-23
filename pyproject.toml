@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Framework :: Pytest",
 ]
 include = ["LICENSE"]
@@ -27,17 +28,17 @@ include = ["LICENSE"]
 pytest-durations = "pytest_durations"
 
 [tool.poetry.dependencies]
-pytest = ">=7.0"
+pytest = ">=8.0"
 python = ">=3.10,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.5"
-pre-commit = "^4.6.0"
+pre-commit = "^4.6.2"
 pytest = "^9.1.1"
 pytest-cov = "^7.1.0"
 pytest-xdist = "^3.8.0"
-ruff = "^0.15.20"
-typos = "^1.47.2"
+ruff = "^0.17.2"
+typos = "^1.51.1"
 time-machine = "^3.2.0"
 virtualenv = "^21.5.1"
 
