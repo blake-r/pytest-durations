@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Pytest plugin mixin to be used when xdist package is used."""
 from typing import TYPE_CHECKING, Any, Union
 

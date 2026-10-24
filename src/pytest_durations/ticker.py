@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Helper module to get original time module functions when a time travelling package is used."""
 from time import time
 

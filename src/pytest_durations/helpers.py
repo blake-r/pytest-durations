@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Internal helper functions module."""
 from collections.abc import Callable, Mapping
 from contextlib import suppress

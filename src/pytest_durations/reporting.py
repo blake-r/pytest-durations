@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Helper to generate formatted measurement report rows from timing data."""
 from collections.abc import Callable, Collection
 from datetime import timedelta

@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 from unittest.mock import Mock, create_autospec
 
 import pytest

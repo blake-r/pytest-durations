@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Tests for JSON exporter."""
 import json
 import tempfile

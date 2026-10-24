@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """JSON export for pytest-durations timing data."""
 from __future__ import annotations
 
