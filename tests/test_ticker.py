@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 import sys
 from collections.abc import Callable
 from datetime import datetime, timedelta, timezone

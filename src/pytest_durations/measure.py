@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Helper class to measure function call durations."""
 import typing
 from types import TracebackType

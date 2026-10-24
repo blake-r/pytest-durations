@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 from pathlib import Path
 
 from poetry.core.pyproject.toml import PyProjectTOML

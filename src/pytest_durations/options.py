@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Plugin command line arguments parsing module."""
 from typing import TYPE_CHECKING
 

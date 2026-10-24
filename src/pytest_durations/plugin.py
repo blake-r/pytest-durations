@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Plugin main implementation logic."""
 from collections.abc import Iterable
 from contextlib import ExitStack, contextmanager

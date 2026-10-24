@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 from typing import TYPE_CHECKING, cast
 
 import pytest

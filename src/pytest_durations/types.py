@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 """Type declarations module."""
 from argparse import ArgumentTypeError
 from collections.abc import Iterator

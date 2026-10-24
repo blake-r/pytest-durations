@@ -1,3 +1,5 @@
+# Copyright (c) 2022 Oleg Blednov
+
 import pytest
 
 pytest_plugins = ["pytester"]

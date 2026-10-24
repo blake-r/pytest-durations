@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2022 Oleg Blednov
+
 """Ensure version is synchronized between across the project."""
 import logging
 import re
