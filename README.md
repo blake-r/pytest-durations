@@ -138,7 +138,7 @@ $ pytest
 
 ## Unreleased
 
-*Nothing unreleased yet.*
+* add support python3.15 (#76).
 
 ## Change Log
 

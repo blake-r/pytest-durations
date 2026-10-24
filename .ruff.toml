@@ -5,7 +5,7 @@ include = ["pyproject.toml", "src/**/*.py", "tests/**/*.py"]
 
 [lint]
 select = ["ALL"]
-ignore = ["ANN204", "ANN401", "ARG001", "ARG002", "D107", "FA100"]
+ignore = ["ANN204", "ANN401", "ARG001", "ARG002", "D107", "FA100", "CPY"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["E402"]
