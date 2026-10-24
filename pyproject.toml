@@ -14,7 +14,6 @@ classifiers = [
     "Topic :: Software Development :: Testing",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -33,7 +32,7 @@ pytest = [
     { version = ">=8.4", python = ">=3.13,<3.15" },
     { version = ">=9.1", python = ">=3.15" },
 ]
-python = ">=3.10,<4.0"
+python = ">=3.11,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 freezegun = "^1.5.5"

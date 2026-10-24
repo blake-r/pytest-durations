@@ -3,7 +3,7 @@
 """Type declarations module."""
 from argparse import ArgumentTypeError
 from collections.abc import Iterator
-from enum import Enum
+from enum import StrEnum
 
 
 class CategoryMeta(type):
@@ -27,12 +27,8 @@ class Category(metaclass=CategoryMeta):
     TEST_TEARDOWN = "test teardown"
 
 
-class StrEnum(str, Enum):
+class StrEnum(StrEnum):
     """Enum for string values that proxies their behavior."""
-
-    def __str__(self) -> str:
-        """Return the current value (expected to be a string)."""
-        return self.value
 
 
 class GroupBy(StrEnum):

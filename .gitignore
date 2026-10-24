@@ -3,4 +3,3 @@
 .coverage
 .venv
 dist
-.dsh/
