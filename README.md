@@ -138,10 +138,14 @@ $ pytest
 
 ## Unreleased
 
-* add support python3.15 (#76).
-* Drop support python3.10 (end-of-life).
+*Nothing unreleased yet.*
 
 ## Change Log
+
+### 1.10.0 (Oct 25, 2026)
+
+* Add support for Python 3.15 (#76).
+* Drop support for Python 3.10 (end-of-life).
 
 ### 1.9.0 (Aug 14, 2026)
 
