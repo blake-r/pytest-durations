@@ -22,6 +22,7 @@ DEFAULT_RESULT_LOG = "-"
 DEFAULT_GROUP_BY = GroupBy.FUNCTION
 DEFAULT_TIME_FORMAT = TimeFormat.CLOCK
 DEFAULT_SHOW_SECTIONS = ALL_CATEGORIES
+DEFAULT_BASELINE_FILENAME = ".pytest_durations_baseline.json"
 
 
 def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> None:
@@ -97,11 +98,25 @@ def pytest_addoption(parser: "Parser", pluginmanager: "PytestPluginManager") -> 
         help='Export timing data as JSON to FILE (use "-" for stdout).'
              ' Written in addition to the terminal report unless --pytest-durations=0.',
     )
+    group.addoption(
+        "--pytest-durations-baseline",
+        metavar="FILE",
+        nargs="?",
+        const=DEFAULT_BASELINE_FILENAME,
+        default=None,
+        help=f'Compare the run against a baseline duration file and update it.'
+             f' If FILE is omitted, "{DEFAULT_BASELINE_FILENAME}" in the rootdir is used.'
+             f' Comparison output is shown even when --pytest-durations=0.',
+    )
 
 
 def pytest_configure(config: "Config") -> None:
     """Configure plugin options using command line arguments."""
-    if not config.getoption("--pytest-durations") and not config.getoption("--pytest-durations-json"):
+    if not (
+        config.getoption("--pytest-durations")
+        or config.getoption("--pytest-durations-json")
+        or config.getoption("--pytest-durations-baseline")
+    ):
         return
 
     from pytest_durations.plugin import PytestDurationPlugin  # noqa: PLC0415
