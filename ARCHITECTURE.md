@@ -108,6 +108,33 @@ merged on the master node:
 Serialization uses plain Python dicts with string keys, so no custom
 serialization logic is required.
 
+### Baseline Comparison (`baseline.py`)
+
+When `--pytest-durations-baseline` is provided, the plugin compares the aggregated
+measurements against the previous baseline file and then refreshes it:
+
+1. `load_baseline` reads the previous document (missing file → first run; broken JSON
+   or unsupported version → warning and treat as first run).
+2. `compare_baseline` matches entries by `(category, raw function key)` and keeps
+   only significant changes: at least 20% difference, at least 3 baseline calls, and a
+   non-zero previous value. The compared metric is the report sort column
+   (`COLUMN_NAMES[selected_columns[0]]`, falling back to `med` when sorting by `num`).
+3. `render_comparison` prints an aligned `change / name / prev / now` section; all
+   durations are formatted with a single `resolve_time_format` result so columns stay
+   rectangular.
+4. `save_baseline` writes the fresh document, which uses the same shape as the
+   `--pytest-durations-json` export (`build_json_data` in `json_exporter.py`).
+
+Raw function keys are used (not the `--pytest-durations-group-by` grouping), so the
+baseline does not drift when display options change. The comparison runs in
+`pytest_terminal_summary` after xdist aggregation and is shown even with
+`--pytest-durations=0`.
+
+Under GitHub Actions (`GITHUB_ACTIONS=true`), each regression additionally emits an
+escaped `::warning file=…,line=…` workflow command built by `github_warning_command`;
+test lines come from `item.location` collected in `pytest_collection_finish`, and only
+the xdist controller reaches `pytest_terminal_summary`, so commands are not duplicated.
+
 ### Types (`types.py`)
 
 Domain enums use a string-backed metaclass pattern:
