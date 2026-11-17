@@ -52,6 +52,12 @@ pytest-durations:
                         Export timing data as JSON to FILE (use "-" for
                         stdout). Written in addition to the terminal report
                         unless --pytest-durations=0.
+  --pytest-durations-baseline=[FILE]
+                        Compare the run against a baseline duration file and
+                        update it. If FILE is omitted,
+                        ".pytest_durations_baseline.json" in the rootdir is
+                        used. Comparison output is shown even when
+                        --pytest-durations=0.
 ```
 
 Note: Please don't confuse these options with the --durations options that come from pytest itself.
@@ -114,14 +120,49 @@ total  name                                                        num min    me
 
 ```json
 {
-  "test call": [
-    {"name": "tests/test_foo.py::test_bar", "calls": 3, "total": 0.0045, "min": 0.001, "med": 0.0015, "p90": 0.0018, "p95": 0.0019, "p99": 0.002, "max": 0.002}
-  ],
-  "fixture": [
-    {"name": "tests/test_foo.py::my_fixture", "calls": 3, "total": 0.003, "min": 0.0009, "med": 0.001, "p90": 0.0011, "p95": 0.0011, "p99": 0.0011, "max": 0.0011}
-  ]
+  "version": "1.0",
+  "categories": {
+    "test call": [
+      {"name": "tests/test_foo.py::test_bar", "calls": 3, "total": 0.0045, "min": 0.001, "med": 0.0015, "p90": 0.0018, "p95": 0.0019, "p99": 0.002, "max": 0.002}
+    ],
+    "fixture": [
+      {"name": "tests/test_foo.py::my_fixture", "calls": 3, "total": 0.003, "min": 0.0009, "med": 0.001, "p90": 0.0011, "p95": 0.0011, "p99": 0.0011, "max": 0.0011}
+    ]
+  }
 }
 ```
+
+## Baseline Comparison
+
+The `--pytest-durations-baseline[=FILE]` option detects test slowdowns across runs. If the
+baseline file exists, the current run is compared against it and significant changes are shown;
+the baseline is then always refreshed with the fresh measurements (coverage-style).
+
+```bash
+$ pytest --pytest-durations-baseline
+
+...
+
+==================== baseline comparison (by total, threshold 20%) ====================
+change  name                        prev        now        
++120.0% tests/test_foo.py::test_bar 0:00:05.000 0:00:11.000
+ -30.0% tests/test_baz.py::test_qux 0:00:03.000 0:00:02.000
+```
+
+Rules of the comparison:
+
+- Only changes of 20% or more are shown; tests with fewer than 3 calls in the baseline are
+  skipped as noisy.
+- The comparison uses the same statistic as the report sort column (by default `total`).
+- Tests are matched by their raw function key, independent of `--pytest-durations-group-by`.
+- The baseline file shares the `--pytest-durations-json` document format, so any JSON export
+  can be used as a baseline.
+- The comparison section is shown even with `--pytest-durations=0`.
+
+Under GitHub Actions (`GITHUB_ACTIONS=true`), every regression additionally emits a
+`::warning` workflow command with the file and line of the slowed test, so pull requests
+get annotations directly in the diff view.
+
 
 ## Development
 
@@ -141,6 +182,14 @@ $ pytest
 *Nothing unreleased yet.*
 
 ## Change Log
+
+### 1.11.0 (Nov 18, 2026)
+
+* Added `--pytest-durations-baseline[=FILE]` option: compare the run against a baseline duration file, show significant
+  slowdowns and speedups (fixed 20% threshold, minimum 3 baseline calls), and refresh the baseline after every run (#58).
+  The baseline file shares the `--pytest-durations-json` document format.
+* Under GitHub Actions, duration regressions are reported as `::warning` annotations with file and line in pull requests (#58).
+* Added `p90`, `p95`, `p99` fields to the `--pytest-durations-json` export.
 
 ### 1.10.0 (Oct 25, 2026)
 
