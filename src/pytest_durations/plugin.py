@@ -1,6 +1,8 @@
 # Copyright (c) 2022 Oleg Blednov
 
 """Plugin main implementation logic."""
+import os
+import sys
 from collections.abc import Iterable
 from contextlib import ExitStack, contextmanager
 from itertools import count
@@ -9,6 +11,16 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
+from pytest_durations.baseline import (
+    CHANGE_THRESHOLD_PCT,
+    DEFAULT_BASELINE_FILENAME,
+    build_baseline,
+    compare_baseline,
+    github_warning_command,
+    load_baseline,
+    render_comparison,
+    save_baseline,
+)
 from pytest_durations.helpers import (
     get_fixture_grouping_func,
     get_fixture_key,
@@ -32,6 +44,7 @@ from pytest_durations.types import COLUMN_NAMES, Category
 if TYPE_CHECKING:
     from _pytest.config import Config, ExitCode
     from _pytest.fixtures import FixtureDef, SubRequest
+    from _pytest.main import Session
     from _pytest.nodes import Item
     from _pytest.terminal import TerminalReporter
 
@@ -44,12 +57,20 @@ class PytestDurationPlugin:
     measurements: "CategoryMeasurementsT"
     shared_fixture_duration: float
     last_fixture_teardown_start: float
+    test_locations: dict[str, tuple[str, int | None]]
 
     def __init__(self):
         super().__init__()
         self.measurements = {category: {} for category in Category}
         self.shared_fixture_duration = 0.0
         self.last_fixture_teardown_start = 0.0
+        self.test_locations = {}
+
+    def pytest_collection_finish(self, session: "Session") -> None:
+        """Remember test locations for GitHub Actions annotations."""
+        for item in session.items:
+            filename, lineno, _domain = item.location
+            self.test_locations[item.nodeid] = (filename, lineno)
 
     @pytest.hookimpl(hookwrapper=True)
     def pytest_fixture_setup(self, fixturedef: "FixtureDef", request: "SubRequest") -> Any | None:
@@ -114,15 +135,80 @@ class PytestDurationPlugin:
         durations = config.getoption("--pytest-durations")
         result_log = config.getoption("--pytest-durations-log")
         json_output = config.getoption("--pytest-durations-json")
+        baseline_output = config.getoption("--pytest-durations-baseline")
         if json_output:
             export_json(measurements=self.measurements, filename=json_output)
-        if not durations:
-            return
         with ExitStack() as stack:
             if result_log != DEFAULT_RESULT_LOG:
                 result_log_fp = stack.enter_context(Path(result_log).open(mode="a"))
                 terminalreporter = type(terminalreporter)(config=config, file=result_log_fp)
+            if baseline_output:
+                self._report_baseline(terminalreporter=terminalreporter, config=config, baseline_file=baseline_output)
+            if not durations:
+                return
             self._report_summary(terminalreporter=terminalreporter, config=config)
+
+    def _report_baseline(self, terminalreporter: "TerminalReporter", config: "Config", baseline_file: str) -> None:
+        """Compare against the previous baseline, then save the fresh one."""
+        baseline_path = Path(baseline_file)
+        if baseline_path.name == DEFAULT_BASELINE_FILENAME and not baseline_path.is_absolute():
+            baseline_path = Path(config.rootpath) / baseline_path
+        old_baseline, warning = load_baseline(baseline_path)
+        if warning:
+            terminalreporter.line(f"-- pytest-durations: {warning}")
+
+        fresh_baseline = build_baseline(self.measurements)
+        metric_label, metric = self._resolve_comparison_metric(config=config)
+        if old_baseline is not None:
+            changes = compare_baseline(old_baseline, fresh_baseline, metric=metric)
+            regressions = [change for change in changes if change.change is not None and change.change > 0]
+            content_lines = render_comparison(
+                changes, metric_label=metric_label, format_seconds=resolve_time_format(
+                    time_format=config.getoption("--pytest-durations-time-format"),
+                    max_seconds=max(
+                        (max(prev, now) for _c, _n, prev, now, _ch in changes if prev is not None),
+                        default=0.0,
+                    ),
+                ),
+            )
+            if len(content_lines) > 1:
+                fullwidth = max(
+                    terminalreporter._tw.fullwidth,  # noqa: SLF001
+                    *(len(line) for line in content_lines),
+                )
+                terminalreporter.write_sep(
+                    sep="=",
+                    title=f"baseline comparison (by {metric_label}, threshold {CHANGE_THRESHOLD_PCT:g}%)",
+                    fullwidth=fullwidth,
+                )
+                for line in content_lines:
+                    terminalreporter.line(line)
+            else:
+                terminalreporter.line(
+                    f"-- pytest-durations: no significant changes vs baseline"
+                    f" (by {metric_label}, threshold {CHANGE_THRESHOLD_PCT:g}%)",
+                )
+            if os.environ.get("GITHUB_ACTIONS") == "true":
+                for change in regressions:
+                    filename, lineno = self.test_locations.get(change.name, (change.name.split("::")[0], None))
+                    sys.stdout.write(github_warning_command(change, file=filename, line=lineno) + "\n")
+        else:
+            test_count = sum(len(entries) for entries in fresh_baseline["categories"].values())
+            category_count = sum(1 for entries in fresh_baseline["categories"].values() if entries)
+            terminalreporter.line(
+                f"-- pytest-durations: baseline written to {baseline_path}"
+                f" ({test_count} tests, {category_count} categories)",
+            )
+        save_baseline(fresh_baseline, baseline_path)
+
+    def _resolve_comparison_metric(self, config: "Config") -> tuple[str, str]:
+        """Resolve the comparison metric from the report sort column."""
+        selected_columns = config.getoption("--pytest-durations-columns")
+        metric_label = selected_columns[0]
+        metric = COLUMN_NAMES[metric_label]
+        if metric == "calls":
+            return "med", "med"
+        return metric_label, metric
 
     def _report_summary(self, terminalreporter: "TerminalReporter", config: "Config") -> None:
         """Write time report to the specified terminal reporter."""

@@ -8,16 +8,14 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from pytest_durations.reporting import TimeValuesT
+
 if TYPE_CHECKING:
     from pytest_durations.typing import CategoryMeasurementsT
 
 
-def export_json(measurements: CategoryMeasurementsT, filename: str) -> None:
-    """Export timing measurements to a JSON file.
-
-    :param measurements: Mapping of categories to name → duration list.
-    :param filename: Output path or "-" for stdout.
-    """
+def build_json_data(measurements: CategoryMeasurementsT) -> dict:
+    """Build the export document shared by JSON export and baseline files."""
     data: dict[str, dict] = {
         "version": "1.0",
         "categories": {},
@@ -27,18 +25,31 @@ def export_json(measurements: CategoryMeasurementsT, filename: str) -> None:
         category_key = str(category)
         entries = []
         for name, times in category_measurements.items():
+            stats = TimeValuesT.from_times(name=name, times=times)
             entry: dict = {
-                "name": name,
-                "calls": len(times),
-                "total": sum(times),
-                "min": min(times) if times else 0.0,
-                "max": max(times) if times else 0.0,
-                "med": sorted(times)[len(times) // 2] if times else 0.0,
+                "name": stats.name,
+                "calls": stats.calls,
+                "total": stats.sum,
+                "min": stats.min,
+                "med": stats.med,
+                "p90": stats.p90,
+                "p95": stats.p95,
+                "p99": stats.p99,
+                "max": stats.max,
             }
             entries.append(entry)
         data["categories"][category_key] = entries
 
-    json_str = json.dumps(data, indent=2, ensure_ascii=False)
+    return data
+
+
+def export_json(measurements: CategoryMeasurementsT, filename: str) -> None:
+    """Export timing measurements to a JSON file.
+
+    :param measurements: Mapping of categories to name → duration list.
+    :param filename: Output path or "-" for stdout.
+    """
+    json_str = json.dumps(build_json_data(measurements), indent=2, ensure_ascii=False)
 
     if filename == "-":
         sys.stdout.write(json_str + "\n")
