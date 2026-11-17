@@ -101,6 +101,15 @@ def test_baseline_shown_when_durations_disabled(pytester):
     result.stdout.fnmatch_lines(["* baseline comparison (by total, threshold 20%) *"])
 
 
+def test_baseline_metric_falls_back_to_med(pytester):
+    """When the report sorts by num, comparison falls back to med."""
+    write_baseline(pytester, [baseline_entry("test_baseline_metric_falls_back_to_med.py::test_fast", 0.003)])
+    pytester.makepyfile(SLOWED_TESTFILE)
+    result = pytester.runpytest("--pytest-durations-baseline", "--pytest-durations-columns", "num,med")
+    result.assert_outcomes(passed=1)
+    result.stdout.fnmatch_lines(["* baseline comparison (by med, threshold 20%) *"])
+
+
 def test_baseline_broken_file_warns_and_overwrites(pytester, baseline_file):
     """A broken baseline file produces a warning and is replaced."""
     baseline_file.write_text("{not json", encoding="utf-8")
